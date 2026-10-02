@@ -1,0 +1,53 @@
+import "okeno-schema-markers";
+
+@command("ae54b85e-269e-4816-ae05-95ad063decb2")
+@icon("/iconify/mdi/tag-plus-outline.svg")
+model CreatePromotion {
+  input: {
+    name: string;
+    code?: string;
+    discount: DiscountRule;
+    startsAt?: utcDateTime;
+    endsAt?: utcDateTime;
+    minimumPurchaseAmount?: int64;
+  };
+  output: {
+    promotion: Promotion;
+  };
+}
+
+@command("53591aad-fc98-4830-a159-a3bb3d33d8e8")
+@icon("/iconify/mdi/tag-check-outline.svg")
+model ActivatePromotion {
+  input: {
+    promotionReference: string;
+  };
+  output: {
+    promotion: Promotion;
+  };
+}
+
+@command("088e5bea-036d-4b7d-bd50-3242acc634bc")
+@icon("/iconify/mdi/tag-off-outline.svg")
+model DeactivatePromotion {
+  input: {
+    promotionReference: string;
+  };
+  output: {
+    promotion: Promotion;
+  };
+}
+
+@command("fff0755e-7129-42bd-b863-5d5e84ff6115")
+@icon("/iconify/mdi/percent-outline.svg")
+model ApplyPromotion {
+  input: {
+    promotionCode: string;
+    purchaseReference: string;
+    subtotal: int64;
+    currency: string;
+  };
+  output: {
+    application: DiscountApplication;
+  };
+}

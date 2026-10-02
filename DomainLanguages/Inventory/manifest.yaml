@@ -1,0 +1,6 @@
+Name: Inventory
+Icon: "/iconify/mdi/warehouse.svg"
+Version: 0.0.1
+Description: Tracking stock by product variant and location, including reservations.
+Color: "#795548"
+Publisher: M1Spec

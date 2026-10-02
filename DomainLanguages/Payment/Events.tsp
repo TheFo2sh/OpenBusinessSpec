@@ -6,39 +6,24 @@ model PaymentCreated {
   payment: Payment;
 }
 
-@icon("/iconify/mdi/account-alert-outline.svg")
-@event("88cc8102-ece0-4639-8c50-921df0c77138", source:"/payments")
-model PaymentRequiresAction {
-  payment: Payment;
-}
-
 @icon("/iconify/mdi/credit-card-check-outline.svg")
 @event("1a690fc3-1154-4217-a046-b6261c466f95", source:"/payments")
 model PaymentAuthorized {
   payment: Payment;
-  paymentAttempt: PaymentAttempt;
 }
 
 @icon("/iconify/mdi/cash-check.svg")
 @event("642d83f0-a683-4d16-a851-52ea7bc4e415", source:"/payments")
 model PaymentCaptured {
   payment: Payment;
-  paymentAttempt: PaymentAttempt;
   amount: int64;
-}
-
-@icon("/iconify/mdi/check-circle-outline.svg")
-@event("020e8771-efb9-4939-8160-adce6100e6ae", source:"/payments")
-model PaymentSucceeded {
-  payment: Payment;
-  paymentAttempt: PaymentAttempt;
 }
 
 @icon("/iconify/mdi/credit-card-off-outline.svg")
 @event("6469b0fc-70bb-4899-9329-febcf08311a1", source:"/payments")
 model PaymentFailed {
   payment: Payment;
-  paymentAttempt: PaymentAttempt;
+  attempt: PaymentAttempt;
 }
 
 @icon("/iconify/mdi/credit-card-remove-outline.svg")
@@ -52,19 +37,16 @@ model PaymentCanceled {
 @event("aed10c8f-f3e2-47b3-bf06-8b19b683fb83", source:"/refunds")
 model RefundCreated {
   refund: Refund;
-  payment: Payment;
 }
 
 @icon("/iconify/mdi/cash-check.svg")
 @event("2249075a-6f33-42db-b409-b08f23842faf", source:"/refunds")
 model RefundSucceeded {
   refund: Refund;
-  payment: Payment;
 }
 
 @icon("/iconify/mdi/cash-remove.svg")
 @event("a56fc404-1b75-4551-a56a-84cf28910d42", source:"/refunds")
 model RefundFailed {
   refund: Refund;
-  payment: Payment;
 }
