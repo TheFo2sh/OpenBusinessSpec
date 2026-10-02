@@ -31,6 +31,7 @@ model LessonAdded {
 @event("78314681-ee1f-4ba8-97b1-e1fa9650eb1f", source:"/courses")
 model CoursePublished {
   course: Course;
+  publishedRevision: string;
   publishedAt: utcDateTime;
 }
 
@@ -38,5 +39,6 @@ model CoursePublished {
 @event("9e3cea0f-f32c-482d-978a-571da88db5d0", source:"/courses")
 model PublishedCourseUpdated {
   course: Course;
+  publishedRevision: string;
   updatedAt: utcDateTime;
 }

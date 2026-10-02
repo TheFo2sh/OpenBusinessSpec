@@ -13,6 +13,7 @@ model Course {
   language: string;
   level: CourseLevel;
   status: CourseStatus;
+  publishedRevision?: string;
   sections: Section[];
 }
 
