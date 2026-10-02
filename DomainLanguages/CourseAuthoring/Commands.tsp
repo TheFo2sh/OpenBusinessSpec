@@ -7,6 +7,7 @@ model CreateCourse {
   input: {
     title: string;
     description: string;
+    topics: string[];
     intendedLearners: string[];
     learningObjectives: string[];
     language: string;

@@ -7,6 +7,7 @@ model Course {
   subtitle?: string;
   description: string;
   instructorId: string;
+  topics: string[];
   intendedLearners: string[];
   learningObjectives: string[];
   language: string;

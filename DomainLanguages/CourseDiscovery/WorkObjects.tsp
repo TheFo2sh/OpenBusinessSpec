@@ -8,7 +8,7 @@ model CatalogCourse {
   subtitle?: string;
   description: string;
   instructorName: string;
-  topic: string;
+  topics: string[];
   level: CourseLevel;
   language: string;
   durationMinutes: int32;

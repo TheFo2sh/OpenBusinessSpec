@@ -5,7 +5,7 @@ import "okeno-schema-markers";
 @icon("/iconify/mdi/account-plus-outline.svg")
 model EnrollInCourse {
   input: {
-    course: Course;
+    courseId: string;
   };
   computed: {
   };
