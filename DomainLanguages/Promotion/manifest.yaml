@@ -4,3 +4,4 @@ Version: 0.0.1
 Description: Defining promotional offers and determining their discounts.
 Color: "#FFC107"
 Publisher: M1Spec
+PackageId: M1Spec.DomainLanguages.Promotion

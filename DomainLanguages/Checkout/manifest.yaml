@@ -4,3 +4,4 @@ Version: 0.0.1
 Description: Collecting customer, delivery, and payment details to place an order.
 Color: "#03A9F4"
 Publisher: M1Spec
+PackageId: M1Spec.DomainLanguages.Checkout

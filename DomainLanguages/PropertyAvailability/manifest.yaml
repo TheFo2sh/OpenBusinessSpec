@@ -4,3 +4,4 @@ Version: 0.0.1
 Description: Manage accommodation inventory, rates, and sales availability.
 Color: "#E09F3E"
 Publisher: M1Spec
+PackageId: M1Spec.DomainLanguages.PropertyAvailability

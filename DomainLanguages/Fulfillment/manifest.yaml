@@ -4,3 +4,4 @@ Version: 0.0.1
 Description: Preparing, shipping, and delivering items from customer orders.
 Color: "#607D8B"
 Publisher: M1Spec
+PackageId: M1Spec.DomainLanguages.Fulfillment

@@ -4,3 +4,4 @@ Version: 0.0.1
 Description: Create, confirm, change, and cancel accommodation reservations.
 Color: "#4C956C"
 Publisher: M1Spec
+PackageId: M1Spec.DomainLanguages.Reservation
