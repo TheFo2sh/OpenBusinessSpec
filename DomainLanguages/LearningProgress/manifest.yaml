@@ -4,3 +4,4 @@ Version: 0.0.1
 Description: Course enrollment and learner progress through lessons.
 Color: "#15803D"
 Publisher: M1Spec
+PackageId: M1Spec.DomainLanguages.LearningProgress

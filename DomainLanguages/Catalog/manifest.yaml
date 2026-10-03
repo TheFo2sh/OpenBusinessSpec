@@ -4,3 +4,4 @@ Version: 0.0.1
 Description: Managing products, variants, and the product information offered for sale.
 Color: "#4CAF50"
 Publisher: M1Spec
+PackageId: M1Spec.DomainLanguages.Catalog

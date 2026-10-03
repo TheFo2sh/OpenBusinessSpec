@@ -4,3 +4,4 @@ Version: 0.0.1
 Description: Managing a shopper's selected items before checkout.
 Color: "#FF9800"
 Publisher: M1Spec
+PackageId: M1Spec.DomainLanguages.ShoppingCart
