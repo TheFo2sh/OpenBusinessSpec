@@ -1,7 +1,7 @@
 Name: Pay for an order
 PackageId: M1Spec.DomainStories.PayForOrder
 Version: 0.0.1
-Description: A customer pays for an order; the merchant confirms and captures the payment with the payment provider, cancels payments left abandoned, and refunds on request.
+Description: A payer pays for an order; the payment service authorizes and captures the payment with the payment provider, cancels payments left abandoned, and refunds on request.
 Icon: "/iconify/mdi/cash-check.svg"
 Publisher: M1Spec
 Dependencies:
