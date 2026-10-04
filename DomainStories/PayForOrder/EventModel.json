@@ -1,52 +1,51 @@
 {
-  "systems": ["MerchantSystem", "PaymentProvider"],
+  "systems": ["PaymentService", "PaymentProvider"],
   "flows": [
     {
-      "system": "MerchantSystem",
-      "startedBy": "Customer",
+      "system": "PaymentService",
+      "startedBy": "Payer",
       "trigger": { "name": "Checkout payment form", "kind": "frontend" },
-      "command": "CreatePayment",
+      "command": "InitiatePayment",
       "events": ["PaymentCreated"]
     },
     {
-      "system": "MerchantSystem",
+      "system": "PaymentService",
       "policy": {
-        "name": "Confirm new payments",
-        "description": "A payment is confirmed with the provider as soon as it exists.",
-        "rules": [{ "when": "PaymentCreated", "then": "ConfirmPayment" }]
+        "name": "Authorize new payments",
+        "description": "A payment is authorized with the provider as soon as it exists.",
+        "rules": [{ "when": "PaymentCreated", "then": "AuthorizePayment" }]
       },
-      "command": "ConfirmPayment",
+      "command": "AuthorizePayment",
       "events": [
         { "name": "PaymentAuthorized", "system": "PaymentProvider" },
-        { "name": "PaymentRequiresAction", "system": "PaymentProvider" },
         { "name": "PaymentFailed", "system": "PaymentProvider" }
       ]
     },
     {
-      "system": "MerchantSystem",
+      "system": "PaymentService",
       "policy": {
         "name": "Capture authorized payments",
         "rules": [
           {
             "when": "PaymentAuthorized",
             "then": "CapturePayment",
-            "condition": { "field": "payment.captureMethod", "operator": "eq", "value": "automatic" },
-            "description": "Automatic capture takes the money as soon as the provider authorizes it."
+            "condition": { "field": "payment.status", "operator": "eq", "value": "authorized" },
+            "description": "The money is taken as soon as the provider authorizes the payment."
           }
         ]
       },
       "command": "CapturePayment",
-      "events": [{ "name": "PaymentCaptured", "system": "PaymentProvider" }, "PaymentSucceeded"]
+      "events": [{ "name": "PaymentCaptured", "system": "PaymentProvider" }]
     },
     {
-      "system": "MerchantSystem",
+      "system": "PaymentService",
       "trigger": { "name": "Abandoned payments sweep", "kind": "time", "cron": "0 2 * * *" },
       "command": "CancelPayment",
       "events": ["PaymentCanceled"]
     },
     {
-      "system": "MerchantSystem",
-      "startedBy": "Customer",
+      "system": "PaymentService",
+      "startedBy": "Payer",
       "trigger": { "name": "Refund request form", "kind": "frontend" },
       "command": "RefundPayment",
       "events": ["RefundCreated", { "name": "RefundSucceeded", "system": "PaymentProvider" }, { "name": "RefundFailed", "system": "PaymentProvider" }]

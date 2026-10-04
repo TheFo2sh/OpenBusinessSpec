@@ -2,49 +2,49 @@
 # (DomainLanguages/Payment). Every name below is an actor or a work object
 # of that language. No coordinates: the editor lays the story out the first
 # time it is opened.
-name: Customer pays for an order
+name: Payer pays for an order
 description: >-
-  The customer pays for an order at checkout. The merchant system creates and
-  confirms the payment with the payment provider, captures it once it is
-  authorized, and later refunds it when the customer asks.
+  The payer pays for an order at checkout. The payment service initiates and
+  authorizes the payment with the payment provider, captures it once it is
+  authorized, and later refunds it when the payer asks.
 
 sentences:
-  - actor: Customer
+  - actor: Payer
     activity: enters
     workObject: PaymentMethod
-    recipient: MerchantSystem
+    recipient: PaymentService
 
-  - actor: MerchantSystem
-    activity: creates
+  - actor: PaymentService
+    activity: initiates
     workObject: Payment
     recipient: PaymentProvider
     recipientActivity: with
 
-  - actor: MerchantSystem
-    activity: confirms
+  - actor: PaymentService
+    activity: authorizes
     workObject: Payment
     recipient: PaymentProvider
     recipientActivity: with
 
   - actor: PaymentProvider
-    activity: authorizes
+    activity: reports
     workObject: PaymentAttempt
-    recipient: MerchantSystem
-    recipientActivity: for
+    recipient: PaymentService
+    recipientActivity: to
 
-  - actor: MerchantSystem
+  - actor: PaymentService
     activity: captures
     workObject: Payment
     recipient: PaymentProvider
     recipientActivity: with
 
-  - actor: Customer
+  - actor: Payer
     activity: requests
     workObject: Refund
-    recipient: MerchantSystem
+    recipient: PaymentService
     recipientActivity: from
 
-  - actor: MerchantSystem
+  - actor: PaymentService
     activity: refunds
     workObjects: [Refund, Payment]
     recipient: PaymentProvider

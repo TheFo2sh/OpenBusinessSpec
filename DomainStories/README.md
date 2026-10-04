@@ -24,7 +24,7 @@ Publisher: M1Spec
 Dependencies:                        # domain language packages, by their PackageId
   - PackageId: M1Spec.DomainLanguages.Payment
     Version: 0.0.1                   # the version the story was written against
-    Alias: Payment                   # optional; lets a name be qualified as Payment/Customer
+    Alias: Payment                   # optional; lets a name be qualified as Payment/Payer
 ```
 
 A dependency the project doesn't have yet is offered for installation from
@@ -34,32 +34,32 @@ is not created.
 ## DomainStory
 
 ```yaml
-name: Customer pays for an order
+name: Payer pays for an order
 description: ...
 sentences:                           # numbered in this order
-  - actor: Customer                  # an actor of a dependency
+  - actor: Payer                     # an actor of a dependency
     activity: enters                 # the verb on the first arrow
     workObject: PaymentMethod        # or workObjects: [A, B]
-    recipient: MerchantSystem        # optional second actor
+    recipient: PaymentService        # optional second actor
     recipientActivity: to            # optional, the verb on the second arrow (default "to")
 ```
 
 ## EventModel
 
 ```yaml
-systems: [MerchantSystem, PaymentProvider]   # matrix columns, in order: non-human actors
+systems: [PaymentService, PaymentProvider]   # matrix columns, in order: non-human actors
 flows:                                       # each flow is a chain, joined by edges
-  - system: MerchantSystem                   # the column its steps sit in (default: first system)
-    startedBy: Customer                      # a human actor; needs a frontend trigger
+  - system: PaymentService                   # the column its steps sit in (default: first system)
+    startedBy: Payer                         # a human actor; needs a frontend trigger
     trigger: { name: Checkout form, kind: frontend }   # frontend | event | time (+ cron: "0 2 * * *")
-    command: CreatePayment
+    command: InitiatePayment
     events: [PaymentCreated, { name: PaymentAuthorized, system: PaymentProvider }]
   - policy:
       name: Capture authorized payments
       rules:
         - when: PaymentAuthorized            # the event it reacts to
           then: CapturePayment               # the command it issues (default: the flow's command)
-          condition: { field: payment.captureMethod, operator: eq, value: automatic }   # optional
+          condition: { field: payment.status, operator: eq, value: authorized }   # optional
           description: ...
     command: CapturePayment
 ```
