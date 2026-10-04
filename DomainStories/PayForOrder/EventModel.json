@@ -1,0 +1,55 @@
+{
+  "systems": ["MerchantSystem", "PaymentProvider"],
+  "flows": [
+    {
+      "system": "MerchantSystem",
+      "startedBy": "Customer",
+      "trigger": { "name": "Checkout payment form", "kind": "frontend" },
+      "command": "CreatePayment",
+      "events": ["PaymentCreated"]
+    },
+    {
+      "system": "MerchantSystem",
+      "policy": {
+        "name": "Confirm new payments",
+        "description": "A payment is confirmed with the provider as soon as it exists.",
+        "rules": [{ "when": "PaymentCreated", "then": "ConfirmPayment" }]
+      },
+      "command": "ConfirmPayment",
+      "events": [
+        { "name": "PaymentAuthorized", "system": "PaymentProvider" },
+        { "name": "PaymentRequiresAction", "system": "PaymentProvider" },
+        { "name": "PaymentFailed", "system": "PaymentProvider" }
+      ]
+    },
+    {
+      "system": "MerchantSystem",
+      "policy": {
+        "name": "Capture authorized payments",
+        "rules": [
+          {
+            "when": "PaymentAuthorized",
+            "then": "CapturePayment",
+            "condition": { "field": "payment.captureMethod", "operator": "eq", "value": "automatic" },
+            "description": "Automatic capture takes the money as soon as the provider authorizes it."
+          }
+        ]
+      },
+      "command": "CapturePayment",
+      "events": [{ "name": "PaymentCaptured", "system": "PaymentProvider" }, "PaymentSucceeded"]
+    },
+    {
+      "system": "MerchantSystem",
+      "trigger": { "name": "Abandoned payments sweep", "kind": "time", "cron": "0 2 * * *" },
+      "command": "CancelPayment",
+      "events": ["PaymentCanceled"]
+    },
+    {
+      "system": "MerchantSystem",
+      "startedBy": "Customer",
+      "trigger": { "name": "Refund request form", "kind": "frontend" },
+      "command": "RefundPayment",
+      "events": ["RefundCreated", { "name": "RefundSucceeded", "system": "PaymentProvider" }, { "name": "RefundFailed", "system": "PaymentProvider" }]
+    }
+  ]
+}

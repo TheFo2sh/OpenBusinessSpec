@@ -1,0 +1,51 @@
+# A domain story told in the Payment domain language
+# (DomainLanguages/Payment). Every name below is an actor or a work object
+# of that language. No coordinates: the editor lays the story out the first
+# time it is opened.
+name: Customer pays for an order
+description: >-
+  The customer pays for an order at checkout. The merchant system creates and
+  confirms the payment with the payment provider, captures it once it is
+  authorized, and later refunds it when the customer asks.
+
+sentences:
+  - actor: Customer
+    activity: enters
+    workObject: PaymentMethod
+    recipient: MerchantSystem
+
+  - actor: MerchantSystem
+    activity: creates
+    workObject: Payment
+    recipient: PaymentProvider
+    recipientActivity: with
+
+  - actor: MerchantSystem
+    activity: confirms
+    workObject: Payment
+    recipient: PaymentProvider
+    recipientActivity: with
+
+  - actor: PaymentProvider
+    activity: authorizes
+    workObject: PaymentAttempt
+    recipient: MerchantSystem
+    recipientActivity: for
+
+  - actor: MerchantSystem
+    activity: captures
+    workObject: Payment
+    recipient: PaymentProvider
+    recipientActivity: with
+
+  - actor: Customer
+    activity: requests
+    workObject: Refund
+    recipient: MerchantSystem
+    recipientActivity: from
+
+  - actor: MerchantSystem
+    activity: refunds
+    workObjects: [Refund, Payment]
+    recipient: PaymentProvider
+    recipientActivity: through
