@@ -1,0 +1,40 @@
+systems: [PromotionService]
+
+flows:
+  - system: PromotionService
+    startedBy: MarketingManager
+    trigger: { name: Promotion editor, kind: frontend }
+    command: CreatePromotion
+    events: [PromotionCreated]
+
+  - system: PromotionService
+    startedBy: MarketingManager
+    trigger: { name: Promotion editor, kind: frontend }
+    command: ActivatePromotion
+    events: [PromotionActivated]
+
+  - system: PromotionService
+    startedBy: MarketingManager
+    trigger: { name: End promotion, kind: frontend }
+    command: DeactivatePromotion
+    events: [PromotionDeactivated]
+
+  - system: PromotionService
+    trigger: { name: Promotion end-date sweep, kind: time, cron: "0 0 * * *" }
+    reads: [ListPromotionsDueToEnd]
+    command: DeactivatePromotion
+    events: [PromotionDeactivated]
+
+  - system: PromotionService
+    startedBy: MarketingManager
+    trigger: { name: Active promotions, kind: frontend }
+    reads: [ListActivePromotions]
+
+readModels:
+  - name: ListActivePromotions
+    system: PromotionService
+    from: [PromotionCreated, PromotionActivated, PromotionDeactivated]
+
+  - name: ListPromotionsDueToEnd
+    system: PromotionService
+    from: [PromotionCreated, PromotionActivated, PromotionDeactivated]

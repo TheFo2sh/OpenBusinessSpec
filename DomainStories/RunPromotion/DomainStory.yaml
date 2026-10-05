@@ -1,0 +1,32 @@
+name: Run a promotion
+description: >-
+  A marketing manager defines a discount promotion for catalog products,
+  activates it for its scheduled period, and deactivates it by hand or when
+  its end date arrives.
+
+sentences:
+  - actor: MarketingManager
+    activity: creates
+    workObject: Promotion
+    recipient: PromotionService
+
+  - actor: MarketingManager
+    activity: defines a discount for
+    workObject: Product
+    recipient: PromotionService
+
+  - actor: MarketingManager
+    activity: activates
+    workObject: Promotion
+    recipient: PromotionService
+
+  - actor: MarketingManager
+    activity: ends
+    workObject: Promotion
+    recipient: PromotionService
+
+  - actor: PromotionService
+    activity: lists active
+    workObject: Promotion
+    recipient: MarketingManager
+    recipientActivity: for
