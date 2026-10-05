@@ -48,3 +48,13 @@ model RejectReturn {
     returnRequest: ReturnRequest;
   };
 }
+
+@readModel
+@command("909486ff-e7f8-4e80-a8c7-a53f32aa91af")
+@icon("/iconify/mdi/clipboard-clock-outline.svg")
+model ListReturnsAwaitingApproval {
+  input: {};
+  output: {
+    returnRequests: ReturnRequest[];
+  };
+}
