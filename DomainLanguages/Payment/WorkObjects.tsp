@@ -41,6 +41,28 @@ model Refund {
   reason?: RefundReason;
 }
 
+/** The provider's own record of an authorization on a payment method - what it authorizes, captures, refunds and voids. */
+@workObject("94a987cf-1edc-4570-bd49-0f924f4a3672")
+@icon("/iconify/mdi/bank-outline.svg")
+model Charge {
+  paymentId: string;
+  providerReference: string;
+  amount: int64;
+  currency: string;
+  capturedAmount: int64;
+  refundedAmount: int64;
+  status: ChargeStatus;
+}
+
+enum ChargeStatus {
+  Authorized: "authorized",
+  Declined: "declined",
+  Captured: "captured",
+  PartiallyRefunded: "partially_refunded",
+  Refunded: "refunded",
+  Voided: "voided",
+}
+
 enum PaymentStatus {
   Pending: "pending",
   Authorized: "authorized",

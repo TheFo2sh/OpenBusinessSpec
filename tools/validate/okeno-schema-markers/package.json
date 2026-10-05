@@ -1,0 +1,8 @@
+{
+  "name": "okeno-schema-markers",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "lib.js",
+  "tspMain": "main.tsp"
+}

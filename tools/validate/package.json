@@ -1,0 +1,24 @@
+{
+  "name": "openbusinessspec-validate",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Checks the domain language and domain story templates of this repository.",
+  "type": "module",
+  "scripts": {
+    "validate": "tsx src/cli.ts ../..",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@typespec/compiler": "^1.15.0",
+    "okeno-schema-markers": "file:./okeno-schema-markers",
+    "yaml": "^2.9.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
+}

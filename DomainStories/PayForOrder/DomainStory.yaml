@@ -4,9 +4,11 @@
 # time it is opened.
 name: Payer pays for an order
 description: >-
-  The payer pays for an order at checkout. The payment service initiates and
-  authorizes the payment with the payment provider, captures it once it is
-  authorized, and later refunds it when the payer asks.
+  The payer pays for an order at checkout. The payment service asks the
+  payment provider to authorize a charge and records the answer; once the
+  payment is authorized the provider captures the charge. A payment left
+  abandoned is canceled and its authorization voided. The payer can ask for a
+  refund, which the provider pays back, and can see where the payment stands.
 
 sentences:
   - actor: Payer
@@ -15,25 +17,29 @@ sentences:
     recipient: PaymentService
 
   - actor: PaymentService
-    activity: initiates
+    activity: asks to authorize
     workObject: Payment
     recipient: PaymentProvider
-    recipientActivity: with
-
-  - actor: PaymentService
-    activity: authorizes
-    workObject: Payment
-    recipient: PaymentProvider
-    recipientActivity: with
 
   - actor: PaymentProvider
     activity: reports
-    workObject: PaymentAttempt
+    workObject: Charge
     recipient: PaymentService
     recipientActivity: to
 
   - actor: PaymentService
-    activity: captures
+    activity: asks to capture
+    workObject: Payment
+    recipient: PaymentProvider
+
+  - actor: PaymentProvider
+    activity: reports the captured
+    workObject: Charge
+    recipient: PaymentService
+    recipientActivity: to
+
+  - actor: PaymentService
+    activity: cancels the abandoned
     workObject: Payment
     recipient: PaymentProvider
     recipientActivity: with
@@ -45,7 +51,18 @@ sentences:
     recipientActivity: from
 
   - actor: PaymentService
-    activity: refunds
-    workObjects: [Refund, Payment]
+    activity: asks to pay back
+    workObject: Refund
     recipient: PaymentProvider
-    recipientActivity: through
+
+  - actor: PaymentProvider
+    activity: reports the refunded
+    workObject: Charge
+    recipient: PaymentService
+    recipientActivity: to
+
+  - actor: Payer
+    activity: checks
+    workObject: Payment
+    recipient: PaymentService
+    recipientActivity: with
