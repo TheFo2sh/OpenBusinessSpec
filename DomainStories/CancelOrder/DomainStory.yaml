@@ -1,0 +1,30 @@
+name: Cancel an order
+description: >-
+  Before an order ships, a customer cancels it. The fulfillment is canceled,
+  a pending payment is canceled or a captured payment is refunded, and the
+  reserved stock is released. The customer can see the updated order status.
+
+sentences:
+  - actor: Order/Customer
+    activity: cancels
+    workObject: Order
+    recipient: Order/OrderManagementService
+
+  - actor: Order/OrderManagementService
+    activity: cancels
+    workObject: Fulfillment/Fulfillment
+    recipient: Fulfillment/FulfillmentService
+
+  - actor: Payment/PaymentService
+    activity: cancels or refunds
+    workObject: Payment/Payment
+    recipient: Payment/PaymentProvider
+
+  - actor: Inventory/InventoryService
+    activity: releases
+    workObject: Inventory/StockReservation
+
+  - actor: Order/Customer
+    activity: views status of
+    workObject: Order
+    recipient: Order/OrderManagementService

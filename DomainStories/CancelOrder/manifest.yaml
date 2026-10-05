@@ -1,0 +1,19 @@
+Name: Cancel an order
+PackageId: M1Spec.DomainStories.CancelOrder
+Version: 0.0.1
+Description: A customer cancels an order before shipment and downstream work is undone.
+Icon: "/iconify/mdi/clipboard-remove-outline.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.Order
+    Version: 0.0.2
+    Alias: Order
+  - PackageId: M1Spec.DomainLanguages.Fulfillment
+    Version: 0.0.2
+    Alias: Fulfillment
+  - PackageId: M1Spec.DomainLanguages.Payment
+    Version: 0.0.2
+    Alias: Payment
+  - PackageId: M1Spec.DomainLanguages.Inventory
+    Version: 0.0.3
+    Alias: Inventory
