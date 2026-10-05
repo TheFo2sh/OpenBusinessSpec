@@ -48,4 +48,4 @@ readModels:
 
   - name: ViewStockLevels
     system: InventoryService
-    from: [StockReceived, StockAdjusted, StockReserved, StockReservationReleased]
+    from: [StockReceived, StockAdjusted, StockReserved, StockReservationReleased, StockReservationConsumed]

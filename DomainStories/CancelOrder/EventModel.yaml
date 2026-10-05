@@ -21,7 +21,10 @@ flows:
       rules:
         - when: OrderCanceled
           then: CancelPayment
-          condition: { field: payment.status, operator: neq, value: captured }
+          condition: { field: payment.status, operator: eq, value: pending }
+        - when: OrderCanceled
+          then: CancelPayment
+          condition: { field: payment.status, operator: eq, value: authorized }
         - when: OrderCanceled
           then: RefundPayment
           condition: { field: payment.status, operator: eq, value: captured }
