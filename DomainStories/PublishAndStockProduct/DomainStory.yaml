@@ -1,0 +1,31 @@
+name: Publish and stock a product
+description: >-
+  A product editor creates a product with priced variants, updates its
+  information, and publishes it. An inventory manager receives stock for a
+  variant and adjusts the count after a stocktake.
+
+sentences:
+  - actor: ProductEditor
+    activity: creates
+    workObject: Product
+    recipient: CatalogService
+
+  - actor: ProductEditor
+    activity: updates
+    workObject: Product
+    recipient: CatalogService
+
+  - actor: ProductEditor
+    activity: publishes
+    workObject: Product
+    recipient: CatalogService
+
+  - actor: InventoryManager
+    activity: receives
+    workObject: InventoryStock
+    recipient: InventoryService
+
+  - actor: InventoryManager
+    activity: adjusts
+    workObject: InventoryStock
+    recipient: InventoryService

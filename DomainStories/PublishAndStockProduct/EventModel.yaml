@@ -1,0 +1,51 @@
+systems: [CatalogService, InventoryService]
+
+flows:
+  - system: CatalogService
+    startedBy: ProductEditor
+    trigger: { name: Product editor, kind: frontend }
+    command: CreateProduct
+    events: [ProductCreated]
+
+  - system: CatalogService
+    startedBy: ProductEditor
+    trigger: { name: Product editor, kind: frontend }
+    command: UpdateProduct
+    events: [ProductUpdated]
+
+  - system: CatalogService
+    startedBy: ProductEditor
+    trigger: { name: Publish product, kind: frontend }
+    command: PublishProduct
+    events: [ProductPublished]
+
+  - system: InventoryService
+    startedBy: InventoryManager
+    trigger: { name: Receive stock form, kind: frontend }
+    command: ReceiveStock
+    events: [StockReceived]
+
+  - system: InventoryService
+    startedBy: InventoryManager
+    trigger: { name: Stocktake form, kind: frontend }
+    command: AdjustStock
+    events: [StockAdjusted]
+
+  - system: CatalogService
+    startedBy: ProductEditor
+    trigger: { name: Product list, kind: frontend }
+    reads: [ListPublishedProducts]
+
+  - system: InventoryService
+    startedBy: InventoryManager
+    trigger: { name: Stock levels, kind: frontend }
+    reads: [ViewStockLevels]
+
+readModels:
+  - name: ListPublishedProducts
+    system: CatalogService
+    from: [ProductPublished, ProductUpdated, ProductArchived]
+
+  - name: ViewStockLevels
+    system: InventoryService
+    from: [StockReceived, StockAdjusted, StockReserved, StockReservationReleased]
