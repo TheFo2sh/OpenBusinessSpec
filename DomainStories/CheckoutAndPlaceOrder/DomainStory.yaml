@@ -1,0 +1,36 @@
+name: Check out and place an order
+description: >-
+  A customer checks out a cart, provides contact and delivery details, and
+  applies an active promotion. The payment provider captures the payment and
+  the order management service places the order.
+
+sentences:
+  - actor: Checkout/Customer
+    activity: begins checkout for
+    workObject: ShoppingCart
+    recipient: CheckoutService
+
+  - actor: Checkout/Customer
+    activity: provides details for
+    workObject: Checkout
+    recipient: CheckoutService
+
+  - actor: Checkout/Customer
+    activity: selects delivery for
+    workObject: Checkout
+    recipient: CheckoutService
+
+  - actor: Checkout/Customer
+    activity: completes
+    workObject: Checkout
+    recipient: CheckoutService
+
+  - actor: Payment/PaymentProvider
+    activity: captures payment for
+    workObject: Order
+    recipient: Order/OrderManagementService
+
+  - actor: Checkout/Customer
+    activity: views
+    workObject: Order
+    recipient: Order/OrderManagementService
