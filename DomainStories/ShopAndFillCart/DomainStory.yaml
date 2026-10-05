@@ -1,0 +1,40 @@
+name: Shop and fill a cart
+description: >-
+  A shopper browses published catalog products and adds product variants to
+  a cart, changes quantities, and removes unwanted items. Stock is reserved
+  for cart items and released if the cart is abandoned.
+
+sentences:
+  - actor: Shopper
+    activity: browses
+    workObject: Product
+    recipient: CartService
+
+  - actor: Shopper
+    activity: creates
+    workObject: ShoppingCart
+    recipient: CartService
+
+  - actor: Shopper
+    activity: adds
+    workObject: CartItem
+    recipient: CartService
+
+  - actor: Shopper
+    activity: changes the quantity of
+    workObject: CartItem
+    recipient: CartService
+
+  - actor: Shopper
+    activity: removes
+    workObject: CartItem
+    recipient: CartService
+
+  - actor: CartService
+    activity: abandons an idle
+    workObject: ShoppingCart
+
+  - actor: Shopper
+    activity: views
+    workObject: ShoppingCart
+    recipient: CartService

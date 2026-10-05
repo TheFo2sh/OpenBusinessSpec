@@ -1,0 +1,71 @@
+systems: [CartService, CatalogService, InventoryService]
+
+flows:
+  - system: CatalogService
+    startedBy: Shopper
+    trigger: { name: Published product listing, kind: frontend }
+    reads: [ListPublishedProducts]
+
+  - system: CartService
+    startedBy: Shopper
+    trigger: { name: Shopping cart, kind: frontend }
+    command: CreateCart
+    events: [CartCreated]
+
+  - system: CartService
+    startedBy: Shopper
+    trigger: { name: Add item, kind: frontend }
+    command: AddCartItem
+    events: [CartItemAdded]
+
+  - system: InventoryService
+    policy:
+      name: Reserve stock for cart items
+      rules:
+        - { when: CartItemAdded, then: ReserveStock }
+    command: ReserveStock
+    events: [StockReserved]
+
+  - system: CartService
+    startedBy: Shopper
+    trigger: { name: Change item quantity, kind: frontend }
+    command: ChangeCartItemQuantity
+    events: [CartItemQuantityChanged]
+
+  - system: CartService
+    startedBy: Shopper
+    trigger: { name: Remove item, kind: frontend }
+    command: RemoveCartItem
+    events: [CartItemRemoved]
+
+  - system: CartService
+    trigger: { name: Idle cart sweep, kind: time, cron: "0 * * * *" }
+    reads: [ListIdleCarts]
+    command: AbandonCart
+    events: [CartAbandoned]
+
+  - system: InventoryService
+    policy:
+      name: Release stock for abandoned carts
+      rules:
+        - { when: CartAbandoned, then: ReleaseStockReservation }
+    command: ReleaseStockReservation
+    events: [StockReservationReleased]
+
+  - system: CartService
+    startedBy: Shopper
+    trigger: { name: Cart view, kind: frontend }
+    reads: [ViewCart]
+
+readModels:
+  - name: ListPublishedProducts
+    system: CatalogService
+    from: [ProductPublished, ProductUpdated, ProductArchived]
+
+  - name: ViewCart
+    system: CartService
+    from: [CartCreated, CartItemAdded, CartItemQuantityChanged, CartItemRemoved, CartAbandoned]
+
+  - name: ListIdleCarts
+    system: CartService
+    from: [CartCreated, CartItemAdded, CartItemQuantityChanged, CartItemRemoved, CartAbandoned]
