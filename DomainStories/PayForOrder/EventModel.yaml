@@ -1,0 +1,113 @@
+# The event model of "Pay for an order", in the Payment domain language.
+#
+# Each system records only its own facts (R1): PaymentService records the
+# payment, PaymentProvider records its charges. Every hand-over between the
+# two is a translation - a policy in the system that reacts, consuming the
+# other system's event and issuing its own command:
+#
+#   PaymentService                         PaymentProvider
+#   InitiatePayment -> PaymentCreated  ->  (Authorize new payments) AuthorizeCharge -> ChargeAuthorized | ChargeDeclined
+#   (Record authorization results) RecordAuthorization -> PaymentAuthorized | PaymentFailed  <-
+#   PaymentAuthorized                  ->  (Capture authorized payments) CaptureCharge -> ChargeCaptured
+#   (Record captures) RecordCapture -> PaymentCaptured  <-
+#
+# Read models show the payment's own facts: the payer's status page, and the
+# list of abandoned payments the nightly sweep works through.
+systems: [PaymentService, PaymentProvider]
+
+flows:
+  - system: PaymentService
+    startedBy: Payer
+    trigger: { name: Checkout payment form, kind: frontend }
+    command: InitiatePayment
+    events: [PaymentCreated]
+
+  - system: PaymentProvider
+    policy:
+      name: Authorize new payments
+      description: The provider authorizes a charge for every new payment.
+      rules:
+        - { when: PaymentCreated, then: AuthorizeCharge }
+    command: AuthorizeCharge
+    events: [ChargeAuthorized, ChargeDeclined]
+
+  - system: PaymentService
+    policy:
+      name: Record authorization results
+      description: The payment records what the provider answered.
+      rules:
+        - { when: ChargeAuthorized, then: RecordAuthorization }
+        - { when: ChargeDeclined, then: RecordAuthorization }
+    command: RecordAuthorization
+    events: [PaymentAuthorized, PaymentFailed]
+
+  - system: PaymentProvider
+    policy:
+      name: Capture authorized payments
+      rules:
+        - when: PaymentAuthorized
+          then: CaptureCharge
+          condition: { field: payment.status, operator: eq, value: authorized }
+          description: The money is taken as soon as the payment is authorized.
+    command: CaptureCharge
+    events: [ChargeCaptured]
+
+  - system: PaymentService
+    policy:
+      name: Record captures
+      rules:
+        - { when: ChargeCaptured, then: RecordCapture }
+    command: RecordCapture
+    events: [PaymentCaptured]
+
+  - system: PaymentService
+    trigger: { name: Abandoned payments sweep, kind: time, cron: "0 2 * * *" }
+    reads: [ListAbandonedPayments]
+    command: CancelPayment
+    events: [PaymentCanceled]
+
+  - system: PaymentProvider
+    policy:
+      name: Void canceled authorizations
+      description: An authorization of a canceled payment is released.
+      rules:
+        - { when: PaymentCanceled, then: VoidAuthorization }
+    command: VoidAuthorization
+    events: [AuthorizationVoided]
+
+  - system: PaymentService
+    startedBy: Payer
+    trigger: { name: Refund request form, kind: frontend }
+    command: RefundPayment
+    events: [RefundRequested]
+
+  - system: PaymentProvider
+    policy:
+      name: Pay back requested refunds
+      rules:
+        - { when: RefundRequested, then: RefundCharge }
+    command: RefundCharge
+    events: [ChargeRefunded, RefundDeclined]
+
+  - system: PaymentService
+    policy:
+      name: Record refund results
+      rules:
+        - { when: ChargeRefunded, then: RecordRefund }
+        - { when: RefundDeclined, then: RecordRefund }
+    command: RecordRefund
+    events: [RefundSucceeded, RefundFailed]
+
+  - system: PaymentService
+    startedBy: Payer
+    trigger: { name: Payment status page, kind: frontend }
+    reads: [ViewPaymentStatus]
+
+readModels:
+  - name: ViewPaymentStatus
+    system: PaymentService
+    from: [PaymentCreated, PaymentAuthorized, PaymentFailed, PaymentCaptured, PaymentCanceled, RefundSucceeded, RefundFailed]
+
+  - name: ListAbandonedPayments
+    system: PaymentService
+    from: [PaymentCreated, PaymentAuthorized, PaymentFailed, PaymentCaptured, PaymentCanceled]

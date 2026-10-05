@@ -1,6 +1,6 @@
 Name: Payment
 Icon: "/iconify/mdi/credit-card-plus-outline.svg"
-Version: 0.0.1
+Version: 0.0.2
 Description: Authorizing, capturing, and refunding customer payments.
 Color: "#FF5733"
 Publisher: M1Spec

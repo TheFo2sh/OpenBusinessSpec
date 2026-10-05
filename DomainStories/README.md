@@ -47,28 +47,65 @@ sentences:                           # numbered in this order
 ## EventModel
 
 ```yaml
-systems: [PaymentService, PaymentProvider]   # matrix columns, in order: non-human actors
+systems: [PaymentService, PaymentProvider]   # the board's bands, in order: non-human actors
 flows:                                       # each flow is a chain, joined by edges
-  - system: PaymentService                   # the column its steps sit in (default: first system)
+  - system: PaymentService                   # the system its steps belong to (default: the first system)
     startedBy: Payer                         # a human actor; needs a frontend trigger
     trigger: { name: Checkout form, kind: frontend }   # frontend | event | time (+ cron: "0 2 * * *")
     command: InitiatePayment
-    events: [PaymentCreated, { name: PaymentAuthorized, system: PaymentProvider }]
-  - policy:
-      name: Capture authorized payments
+    events: [PaymentCreated]                 # recorded by the command - in its own system (R1)
+  - system: PaymentProvider                  # a translation: the provider reacts in its own system
+    policy:
+      name: Authorize new payments
       rules:
-        - when: PaymentAuthorized            # the event it reacts to
-          then: CapturePayment               # the command it issues (default: the flow's command)
-          condition: { field: payment.status, operator: eq, value: authorized }   # optional
+        - when: PaymentCreated               # the event it reacts to
+          then: AuthorizeCharge              # the command it issues (default: the flow's command)
+          condition: { field: payment.status, operator: eq, value: pending }   # optional
           description: ...
-    command: CapturePayment
+    command: AuthorizeCharge
+    events: [ChargeAuthorized, ChargeDeclined]
+  - system: PaymentService
+    startedBy: Payer
+    trigger: { name: Payment status page, kind: frontend }
+    reads: [ViewPaymentStatus]               # read models the trigger (or policy) asks; no command: a state view
+readModels:                                  # optional
+  - name: ViewPaymentStatus                  # a command of the language marked @readModel
+    system: PaymentService
+    from: [PaymentCreated, PaymentAuthorized]  # the events it is built from - of its own system (R1)
 ```
 
-Edges run `startedBy` -> `trigger` -> `command` -> each event, and for a
-policy, each rule's `when` event -> policy -> its `then` command. A command or
-event mentioned in several flows is one node. Policies and time triggers are
-created in the language of the command they lead to.
+Edges run `startedBy` -> `trigger` -> `command` -> each event; for a policy,
+each rule's `when` event -> policy -> its `then` command; for a read model,
+each `from` event -> read model, and each `reads` -> its asker. A command or
+event mentioned in several flows is one node, in the system of the first flow
+that names it - so list the flow that records an event before the flows that
+react to it. Policies and time triggers are created in the language of the
+command they lead to.
 
-`PayForOrder/` is a complete example told in the Payment domain language. Its
-story is in YAML and its event model in JSON; either file can use either
-format.
+## Rules
+
+Every event model is held to these rules - by the editor when it is saved,
+and by this repository's CI (`tools/validate`) for every template.
+
+- **R1 - a command only connects to events of its own system.** The system
+  that executes a command records what happened; it never records another
+  system's facts, and a read model is built only from its own system's
+  events. When another system answers, that system's own command records the
+  answer, and a policy in the asking system - a translation - turns it into
+  the asking system's command and event:
+
+  ```
+  PaymentService   InitiatePayment -> PaymentCreated
+  PaymentProvider                       (Authorize new payments) -> AuthorizeCharge -> ChargeAuthorized
+  PaymentService   (Record authorization results) -> RecordAuthorization -> PaymentAuthorized   <- ChargeAuthorized
+  ```
+
+Besides the rules, a template must name only what its dependencies have, a
+person starts a flow through a frontend trigger, and an event is recorded by
+exactly one command.
+
+`PayForOrder/` is a complete example told in the Payment domain language: a
+payment service and a payment provider handing a payment back and forth
+through translations, with a status page and the nightly sweep's list of
+abandoned payments as read models. Its story and event model are YAML; either
+file can be JSON as well.
