@@ -66,3 +66,14 @@ model ViewStockLevels {
     stocks: InventoryStock[];
   };
 }
+
+@command("4581b216-93ec-498b-a2e1-2f5cf7705425")
+@icon("/iconify/mdi/package-variant-closed-check.svg")
+model ConsumeStockReservation {
+  input: {
+    reservationReference: string;
+  };
+  output: {
+    reservation: StockReservation;
+  };
+}

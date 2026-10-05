@@ -25,6 +25,7 @@ enum ReservationStatus {
   Active: "active",
   Released: "released",
   Expired: "expired",
+  Consumed: "consumed",
 }
 
 enum InventoryAdjustmentReason {

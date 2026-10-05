@@ -1,0 +1,47 @@
+systems: [OrderManagementService, FulfillmentService, DeliveryCarrier, InventoryService]
+
+flows:
+  - system: FulfillmentService
+    policy:
+      name: Create fulfilment for placed orders
+      rules:
+        - { when: OrderPlaced, then: CreateFulfillment }
+    command: CreateFulfillment
+    events: [FulfillmentCreated]
+
+  - system: FulfillmentService
+    startedBy: WarehouseOperator
+    trigger: { name: Warehouse dispatch, kind: frontend }
+    command: ShipFulfillment
+    events: [FulfillmentShipped]
+
+  - system: InventoryService
+    policy:
+      name: Consume reserved stock on shipment
+      rules:
+        - { when: FulfillmentShipped, then: ConsumeStockReservation }
+    command: ConsumeStockReservation
+    events: [StockReservationConsumed]
+
+  - system: FulfillmentService
+    trigger: { name: Carrier delivery confirmation, kind: event, system: DeliveryCarrier }
+    command: MarkFulfillmentDelivered
+    events: [FulfillmentDelivered]
+
+  - system: OrderManagementService
+    policy:
+      name: Close delivered orders
+      rules:
+        - { when: FulfillmentDelivered, then: CloseOrder }
+    command: CloseOrder
+    events: [OrderClosed]
+
+  - system: FulfillmentService
+    startedBy: WarehouseOperator
+    trigger: { name: Warehouse pick list, kind: frontend }
+    reads: [ListFulfillmentsToShip]
+
+readModels:
+  - name: ListFulfillmentsToShip
+    system: FulfillmentService
+    from: [FulfillmentCreated, FulfillmentShipped, FulfillmentDelivered, FulfillmentCanceled]

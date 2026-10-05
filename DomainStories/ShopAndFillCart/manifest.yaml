@@ -12,5 +12,5 @@ Dependencies:
     Version: 0.0.2
     Alias: Catalog
   - PackageId: M1Spec.DomainLanguages.Inventory
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: Inventory

@@ -26,3 +26,9 @@ model StockReserved {
 model StockReservationReleased {
   reservation: StockReservation;
 }
+
+@icon("/iconify/mdi/package-check.svg")
+@event("f4f0f9a7-3bc4-4fdd-8b1f-fe91c3adaa00", source:"/inventory/reservations")
+model StockReservationConsumed {
+  reservation: StockReservation;
+}
