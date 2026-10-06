@@ -100,6 +100,11 @@ and by this repository's CI (`tools/validate`) for every template.
   PaymentService   (Record authorization results) -> RecordAuthorization -> PaymentAuthorized   <- ChargeAuthorized
   ```
 
+- **R2 - a command a UI trigger starts is exposed as a REST API.** A person's
+  screen reaches a system over HTTP, so a command (or a read model) asked
+  through a `frontend` trigger carries `@rest(<Verb>, "<path>")` in its domain
+  language. Commands only policies, event triggers or schedules issue need none.
+
 Besides the rules, a template must name only what its dependencies have, a
 person starts a flow through a frontend trigger, an event is recorded by
 exactly one command, and **every system of the event model is an actor (or

@@ -6,8 +6,8 @@ Icon: "/iconify/mdi/package-variant-closed-check.svg"
 Publisher: M1Spec
 Dependencies:
   - PackageId: M1Spec.DomainLanguages.Catalog
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: Catalog
   - PackageId: M1Spec.DomainLanguages.Inventory
-    Version: 0.0.3
+    Version: 0.0.4
     Alias: Inventory

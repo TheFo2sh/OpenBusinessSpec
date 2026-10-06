@@ -14,6 +14,7 @@ model RequestReturn {
   };
 }
 
+@rest(Post, "/returns/{returnReference}/approve")
 @command("f82c236d-71b3-4fc2-809f-6cefca3f7f61")
 @icon("/iconify/mdi/check-circle-outline.svg")
 model ApproveReturn {
@@ -25,6 +26,7 @@ model ApproveReturn {
   };
 }
 
+@rest(Post, "/returns/{returnReference}/receive")
 @command("d44d129a-dd55-4c35-a2d6-c68a1886a329")
 @icon("/iconify/mdi/package-check.svg")
 model ReceiveReturn {
@@ -37,6 +39,7 @@ model ReceiveReturn {
   };
 }
 
+@rest(Post, "/returns/{returnReference}/reject")
 @command("b1375487-a25f-41a1-a564-e592a0ce5ddb")
 @icon("/iconify/mdi/close-circle-outline.svg")
 model RejectReturn {
@@ -50,6 +53,7 @@ model RejectReturn {
 }
 
 @readModel
+@rest(Get, "/returns/awaiting-approval")
 @command("909486ff-e7f8-4e80-a8c7-a53f32aa91af")
 @icon("/iconify/mdi/clipboard-clock-outline.svg")
 model ListReturnsAwaitingApproval {

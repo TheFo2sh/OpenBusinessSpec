@@ -12,6 +12,7 @@ model CreateFulfillment {
   };
 }
 
+@rest(Post, "/fulfillments/{fulfillmentReference}/ship")
 @command("6823e546-a0a4-43e0-949b-9c6e03ca2419")
 @icon("/iconify/mdi/truck-check-outline.svg")
 model ShipFulfillment {
@@ -50,6 +51,7 @@ model CancelFulfillment {
 }
 
 @readModel
+@rest(Get, "/fulfillments/to-ship")
 @command("8665cca6-bead-4fee-b98e-4bdb95101c3a")
 @icon("/iconify/mdi/clipboard-list-outline.svg")
 model ListFulfillmentsToShip {

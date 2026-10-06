@@ -148,6 +148,7 @@ function checkEventModel(model: EventModelFile, resolver: Resolver, file: string
             const item = resolver.resolve('commands', step.name, file, `${where} command`);
             if (item?.isReadModel && (flow.events ?? []).length > 0) problems.add(file, `${where}: "${step.name}" is a read model; a read model records no event`);
             command = place('command', step.name, step.system ?? flow.system);
+            if (item) command.restExposed = item.restExposed;
         }
         for (const eventStep of (flow.events ?? []).map(placedName)) {
             inSystems(eventStep.system, where);
@@ -168,6 +169,7 @@ function checkEventModel(model: EventModelFile, resolver: Resolver, file: string
         const item = resolver.resolve('commands', readModel.name, file, where);
         if (item && !item.isReadModel) problems.add(file, `${where}: "${readModel.name}" is a command that is not marked as a read model (@readModel)`);
         const node = place('command', readModel.name, readModel.system);
+        if (item) node.restExposed = item.restExposed;
         readModels.set(readModel.name.toLowerCase(), node);
         for (const eventName of readModel.from) {
             resolver.resolve('events', eventName, file, `${where} from`);
@@ -177,7 +179,14 @@ function checkEventModel(model: EventModelFile, resolver: Resolver, file: string
 
     for (const [index, flow] of model.flows.entries()) {
         const where = `flow ${index + 1}`;
-        if (flow.trigger) inSystems(flow.trigger.system, where);
+        let trigger: ModelNode | undefined;
+        if (flow.trigger) {
+            inSystems(flow.trigger.system, where);
+            // A flow's trigger is its own node - two flows' triggers are two triggers, even with one name.
+            trigger = { id: `trigger:${index}`, kind: 'trigger', name: flow.trigger.name, system: (flow.trigger.system ?? flow.system ?? model.systems[0]!).toLowerCase(), triggerKind: flow.trigger.kind };
+            nodes.set(trigger.id, trigger);
+            if (flow.command) connect(trigger, nodes.get(`command:${placedName(flow.command).name.toLowerCase()}`), where);
+        }
         if (flow.startedBy) {
             const person = resolver.resolve('actors', flow.startedBy, file, `${where} startedBy`);
             if (person && person.actorType !== 'Human') problems.add(file, `${where}: startedBy "${flow.startedBy}" is not a human actor`);
@@ -199,6 +208,7 @@ function checkEventModel(model: EventModelFile, resolver: Resolver, file: string
         }
         for (const read of flow.reads ?? []) {
             if (!readModels.has(read.toLowerCase())) problems.add(file, `${where}: reads "${read}", which is not one of the event model's read models`);
+            else connect(trigger, readModels.get(read.toLowerCase()), where);
         }
     }
 

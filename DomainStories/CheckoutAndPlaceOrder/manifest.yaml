@@ -9,13 +9,13 @@ Dependencies:
     Version: 0.0.1
     Alias: Checkout
   - PackageId: M1Spec.DomainLanguages.ShoppingCart
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: ShoppingCart
   - PackageId: M1Spec.DomainLanguages.Order
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: Order
   - PackageId: M1Spec.DomainLanguages.Promotion
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: Promotion
   - PackageId: M1Spec.DomainLanguages.Payment
     Version: 0.0.2

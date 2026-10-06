@@ -6,11 +6,11 @@ Icon: "/iconify/mdi/cash-refund.svg"
 Publisher: M1Spec
 Dependencies:
   - PackageId: M1Spec.DomainLanguages.Returns
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: Returns
   - PackageId: M1Spec.DomainLanguages.Payment
     Version: 0.0.2
     Alias: Payment
   - PackageId: M1Spec.DomainLanguages.Inventory
-    Version: 0.0.3
+    Version: 0.0.4
     Alias: Inventory
