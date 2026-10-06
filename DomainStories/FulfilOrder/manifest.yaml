@@ -6,11 +6,11 @@ Icon: "/iconify/mdi/truck-delivery-outline.svg"
 Publisher: M1Spec
 Dependencies:
   - PackageId: M1Spec.DomainLanguages.Order
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: Order
   - PackageId: M1Spec.DomainLanguages.Fulfillment
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: Fulfillment
   - PackageId: M1Spec.DomainLanguages.Inventory
-    Version: 0.0.3
+    Version: 0.0.4
     Alias: Inventory

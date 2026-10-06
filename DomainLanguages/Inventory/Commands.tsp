@@ -1,5 +1,6 @@
 import "okeno-schema-markers";
 
+@rest(Post, "/stock/{variantReference}/receive")
 @command("a06e94fa-d0cb-45b3-ab04-da958135e7bc")
 @icon("/iconify/mdi/package-variant-plus.svg")
 model ReceiveStock {
@@ -13,6 +14,7 @@ model ReceiveStock {
   };
 }
 
+@rest(Post, "/stock/{variantReference}/adjust")
 @command("c40b4bf6-fb50-4e4b-9d2d-b50564e776bc")
 @icon("/iconify/mdi/package-variant-edit.svg")
 model AdjustStock {
@@ -55,6 +57,7 @@ model ReleaseStockReservation {
 }
 
 @readModel
+@rest(Get, "/stock")
 @command("3b4c7ffc-ce2e-44f6-93fd-1a0025de9100")
 @icon("/iconify/mdi/package-variant.svg")
 model ViewStockLevels {
