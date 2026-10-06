@@ -102,6 +102,25 @@ describe('domain story templates', () => {
         ]));
     });
 
+    it('refuses a command or read model a UI trigger starts that is not exposed as a REST API (R2)', async () => {
+        const root = copyRepository({
+            'DomainLanguages/Payment/Commands.tsp': (old) =>
+                old.replace('@rest(Post, "/payments")\n', '').replace('@rest(Get, "/payments/{paymentId}")\n', ''),
+        });
+        expect(await messages(root)).toEqual(expect.arrayContaining([
+            expect.stringMatching(/PayForOrder\/EventModel\.yaml: flow 1: R2 - command "InitiatePayment" is started by the UI trigger "Checkout payment form" but is not exposed as a REST API/),
+            expect.stringMatching(/R2 - command "ViewPaymentStatus" is started by the UI trigger "Payment status page"/),
+        ]));
+    });
+
+    it('leaves alone a command only a policy or a schedule starts', async () => {
+        // RecordAuthorization is issued by a policy: no @rest needed for R2.
+        const root = copyRepository({
+            'DomainLanguages/Payment/Commands.tsp': (old) => old.replace('@rest(Post, "/payments/record-authorization")\n', ''),
+        });
+        expect((await messages(root)).filter((m) => m.includes('R2'))).toEqual([]);
+    });
+
     it('checks the domain story names against the languages', async () => {
         const root = copyRepository({
             'DomainStories/PayForOrder/DomainStory.yaml': (old) => old.replace('workObject: PaymentMethod', 'workObject: Wallet'),

@@ -6,8 +6,8 @@ Icon: "/iconify/mdi/tag-heart-outline.svg"
 Publisher: M1Spec
 Dependencies:
   - PackageId: M1Spec.DomainLanguages.Promotion
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: Promotion
   - PackageId: M1Spec.DomainLanguages.Catalog
-    Version: 0.0.2
+    Version: 0.0.3
     Alias: Catalog

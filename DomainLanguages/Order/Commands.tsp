@@ -40,6 +40,7 @@ model CloseOrder {
 }
 
 @readModel
+@rest(Get, "/customers/{customerReference}/orders")
 @command("6720db30-8bc4-4766-9708-ef26f3fdb697")
 @icon("/iconify/mdi/clipboard-list-outline.svg")
 model ViewCustomerOrders {

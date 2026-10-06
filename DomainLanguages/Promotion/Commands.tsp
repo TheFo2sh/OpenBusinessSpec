@@ -1,5 +1,6 @@
 import "okeno-schema-markers";
 
+@rest(Post, "/promotions")
 @command("ae54b85e-269e-4816-ae05-95ad063decb2")
 @icon("/iconify/mdi/tag-plus-outline.svg")
 model CreatePromotion {
@@ -16,6 +17,7 @@ model CreatePromotion {
   };
 }
 
+@rest(Post, "/promotions/{promotionReference}/activate")
 @command("53591aad-fc98-4830-a159-a3bb3d33d8e8")
 @icon("/iconify/mdi/tag-check-outline.svg")
 model ActivatePromotion {
@@ -27,6 +29,7 @@ model ActivatePromotion {
   };
 }
 
+@rest(Post, "/promotions/{promotionReference}/deactivate")
 @command("088e5bea-036d-4b7d-bd50-3242acc634bc")
 @icon("/iconify/mdi/tag-off-outline.svg")
 model DeactivatePromotion {
@@ -53,6 +56,7 @@ model ApplyPromotion {
 }
 
 @readModel
+@rest(Get, "/promotions/active")
 @command("8f5d2385-619d-4f85-9d00-e510af79b36c")
 @icon("/iconify/mdi/tag-check-outline.svg")
 model ListActivePromotions {

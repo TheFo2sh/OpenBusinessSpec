@@ -11,7 +11,8 @@ export type LanguageItem = { id: string; name: string; file: string };
 export type LanguageItems = {
     actors: (LanguageItem & { actorType: ActorType })[];
     workObjects: LanguageItem[];
-    commands: (LanguageItem & { isReadModel: boolean })[];
+    /** `restExposed`: the command carries `@rest` - it is exposed as a REST API. */
+    commands: (LanguageItem & { isReadModel: boolean; restExposed: boolean })[];
     events: LanguageItem[];
 };
 
@@ -110,7 +111,7 @@ export async function readLanguage(language: TemplateFolder, problems: Problems)
         }
         if (markerOf(model, 'restResponse') && !event) problems.add(file, `${model.name}: @restResponse only goes on an @event`);
 
-        if (command) items.commands.push({ id: idOf(command, 'command'), name: model.name, file, isReadModel: !!markerOf(model, 'readModel') });
+        if (command) items.commands.push({ id: idOf(command, 'command'), name: model.name, file, isReadModel: !!markerOf(model, 'readModel'), restExposed: !!rest });
         else if (event) items.events.push({ id: idOf(event, 'event'), name: model.name, file });
         else if (actor) {
             const actorType = (actor[1] ?? 'InternalSystem') as ActorType;

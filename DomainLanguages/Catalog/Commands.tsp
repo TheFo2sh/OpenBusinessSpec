@@ -1,5 +1,6 @@
 import "okeno-schema-markers";
 
+@rest(Post, "/products")
 @command("2476e517-7ab1-4885-954d-b547841cce5e")
 @icon("/iconify/mdi/tag-plus-outline.svg")
 model CreateProduct {
@@ -14,6 +15,7 @@ model CreateProduct {
   };
 }
 
+@rest(Put, "/products/{productId}")
 @command("a23f1eae-5c65-4fe1-906a-5a721e598d47")
 @icon("/iconify/mdi/tag-edit-outline.svg")
 model UpdateProduct {
@@ -29,6 +31,7 @@ model UpdateProduct {
   };
 }
 
+@rest(Post, "/products/{productId}/publish")
 @command("af904420-9195-4ab2-9cda-a55e1d22ec8c")
 @icon("/iconify/mdi/eye-check-outline.svg")
 model PublishProduct {
@@ -52,6 +55,7 @@ model ArchiveProduct {
 }
 
 @readModel
+@rest(Get, "/products/published")
 @command("62f9e8a8-ac8f-46a8-b85f-878aa47e6f56")
 @icon("/iconify/mdi/tag-multiple-outline.svg")
 model ListPublishedProducts {

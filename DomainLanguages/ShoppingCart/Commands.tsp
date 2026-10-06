@@ -65,6 +65,7 @@ model AbandonCart {
 }
 
 @readModel
+@rest(Get, "/carts/{cartId}")
 @command("2ff1fd2c-718b-472a-892d-d6adc5b178e7")
 @icon("/iconify/mdi/cart-outline.svg")
 model ViewCart {
