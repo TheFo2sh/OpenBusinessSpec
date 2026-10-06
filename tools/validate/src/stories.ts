@@ -70,14 +70,20 @@ export function checkStory(story: TemplateFolder, languagesByPackage: Map<string
         return files[0];
     };
 
+    // The story's actors, by item id - an event model system must be one of them.
+    const told = new Set<string>();
     const storyFile = pick(STORY_FILE, 'domain story', true);
     if (storyFile) {
         const file = `${story.folder}/${storyFile}`;
         const domainStory = parseFile(file, story.files[storyFile]!, domainStoryFileSchema, problems);
         for (const [index, sentence] of (domainStory?.sentences ?? []).entries()) {
             const where = `sentence ${index + 1}`;
-            resolver.resolve('actors', sentence.actor, file, `${where} actor`);
-            if (sentence.recipient) resolver.resolve('actors', sentence.recipient, file, `${where} recipient`);
+            const actor = resolver.resolve('actors', sentence.actor, file, `${where} actor`);
+            if (actor) told.add(actor.id);
+            if (sentence.recipient) {
+                const recipient = resolver.resolve('actors', sentence.recipient, file, `${where} recipient`);
+                if (recipient) told.add(recipient.id);
+            }
             for (const workObject of sentence.workObjects ?? [sentence.workObject!]) resolver.resolve('workObjects', workObject, file, `${where} work object`);
         }
     }
@@ -86,7 +92,19 @@ export function checkStory(story: TemplateFolder, languagesByPackage: Map<string
     if (eventModelFile) {
         const file = `${story.folder}/${eventModelFile}`;
         const eventModel = parseFile(file, story.files[eventModelFile]!, eventModelFileSchema, problems);
-        if (eventModel) checkEventModel(eventModel, resolver, file, problems);
+        if (eventModel) {
+            checkEventModel(eventModel, resolver, file, problems);
+            // The editor's board has a band per system of the story: a system only
+            // the event model knows would leave its steps nowhere to stand.
+            if (storyFile) {
+                for (const system of eventModel.systems) {
+                    const actor = resolver.resolve('actors', system, file, 'systems');
+                    if (actor && !told.has(actor.id)) {
+                        problems.add(file, `systems: "${system}" is a system of the event model but no sentence of the domain story has it as an actor or recipient - tell its part in the story`);
+                    }
+                }
+            }
+        }
     }
     return manifest.PackageId;
 }

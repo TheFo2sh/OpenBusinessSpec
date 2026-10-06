@@ -10,6 +10,12 @@ sentences:
     workObject: ShoppingCart
     recipient: CheckoutService
 
+  - actor: CheckoutService
+    activity: gets an active discount as
+    workObject: DiscountApplication
+    recipient: Promotion/PromotionService
+    recipientActivity: from
+
   - actor: Checkout/Customer
     activity: provides details for
     workObject: Checkout
@@ -25,10 +31,29 @@ sentences:
     workObject: Checkout
     recipient: CheckoutService
 
+  - actor: CheckoutService
+    activity: asks for
+    workObject: Payment
+    recipient: Payment/PaymentService
+    recipientActivity: from
+
+  - actor: Payment/PaymentService
+    activity: asks to authorize and capture
+    workObject: Charge
+    recipient: Payment/PaymentProvider
+    recipientActivity: with
+
   - actor: Payment/PaymentProvider
-    activity: captures payment for
-    workObject: Order
+    activity: reports the captured
+    workObject: Charge
+    recipient: Payment/PaymentService
+    recipientActivity: to
+
+  - actor: Payment/PaymentService
+    activity: reports the captured
+    workObject: Payment
     recipient: Order/OrderManagementService
+    recipientActivity: to, which places the order
 
   - actor: Checkout/Customer
     activity: views

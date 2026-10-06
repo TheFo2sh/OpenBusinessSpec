@@ -92,6 +92,16 @@ describe('domain story templates', () => {
         ]));
     });
 
+    it('refuses an event model system the story never tells', async () => {
+        const root = copyRepository({
+            'DomainStories/ShopAndFillCart/DomainStory.yaml': (old) =>
+                old.replace('recipient: CatalogService', 'recipient: CartService').replace('    recipientActivity: in\n', ''),
+        });
+        expect(await messages(root)).toEqual(expect.arrayContaining([
+            expect.stringMatching(/ShopAndFillCart\/EventModel\.yaml: systems: "CatalogService" is a system of the event model but no sentence of the domain story has it/),
+        ]));
+    });
+
     it('checks the domain story names against the languages', async () => {
         const root = copyRepository({
             'DomainStories/PayForOrder/DomainStory.yaml': (old) => old.replace('workObject: PaymentMethod', 'workObject: Wallet'),

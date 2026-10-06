@@ -101,8 +101,11 @@ and by this repository's CI (`tools/validate`) for every template.
   ```
 
 Besides the rules, a template must name only what its dependencies have, a
-person starts a flow through a frontend trigger, and an event is recorded by
-exactly one command.
+person starts a flow through a frontend trigger, an event is recorded by
+exactly one command, and **every system of the event model is an actor (or
+recipient) of the domain story** - the editor's board has a band for each of
+the story's systems, so a system only the event model knows would leave its
+steps nowhere to stand.
 
 `PayForOrder/` is a complete example told in the Payment domain language: a
 payment service and a payment provider handing a payment back and forth
