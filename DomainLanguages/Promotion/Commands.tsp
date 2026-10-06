@@ -51,3 +51,25 @@ model ApplyPromotion {
     application: DiscountApplication;
   };
 }
+
+@readModel
+@command("8f5d2385-619d-4f85-9d00-e510af79b36c")
+@icon("/iconify/mdi/tag-check-outline.svg")
+model ListActivePromotions {
+  input: {};
+  output: {
+    promotions: Promotion[];
+  };
+}
+
+@readModel
+@command("d9b09ce5-433f-4c96-9f8f-db6966839e42")
+@icon("/iconify/mdi/tag-clock-outline.svg")
+model ListPromotionsDueToEnd {
+  input: {
+    asOf?: utcDateTime;
+  };
+  output: {
+    promotions: Promotion[];
+  };
+}

@@ -1,0 +1,13 @@
+Name: Run a promotion
+PackageId: M1Spec.DomainStories.RunPromotion
+Version: 0.0.1
+Description: A marketing manager creates, activates, and ends a promotion.
+Icon: "/iconify/mdi/tag-heart-outline.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.Promotion
+    Version: 0.0.2
+    Alias: Promotion
+  - PackageId: M1Spec.DomainLanguages.Catalog
+    Version: 0.0.2
+    Alias: Catalog

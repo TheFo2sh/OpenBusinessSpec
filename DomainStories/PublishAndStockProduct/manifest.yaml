@@ -1,0 +1,13 @@
+Name: Publish and stock a product
+PackageId: M1Spec.DomainStories.PublishAndStockProduct
+Version: 0.0.1
+Description: A product is created, published, stocked, and counted.
+Icon: "/iconify/mdi/package-variant-closed-check.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.Catalog
+    Version: 0.0.2
+    Alias: Catalog
+  - PackageId: M1Spec.DomainLanguages.Inventory
+    Version: 0.0.3
+    Alias: Inventory

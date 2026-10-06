@@ -63,3 +63,27 @@ model AbandonCart {
     cart: ShoppingCart;
   };
 }
+
+@readModel
+@command("2ff1fd2c-718b-472a-892d-d6adc5b178e7")
+@icon("/iconify/mdi/cart-outline.svg")
+model ViewCart {
+  input: {
+    cartId: string;
+  };
+  output: {
+    cart: ShoppingCart;
+  };
+}
+
+@readModel
+@command("84a86e15-0b99-4892-b62f-1aa2648a7703")
+@icon("/iconify/mdi/cart-clock.svg")
+model ListIdleCarts {
+  input: {
+    asOf?: utcDateTime;
+  };
+  output: {
+    carts: ShoppingCart[];
+  };
+}

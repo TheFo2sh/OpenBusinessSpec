@@ -1,0 +1,95 @@
+systems: [CheckoutService, PromotionService, PaymentService, PaymentProvider, OrderManagementService]
+
+flows:
+  - system: CheckoutService
+    startedBy: Checkout/Customer
+    trigger: { name: Checkout form, kind: frontend }
+    command: BeginCheckout
+    events: [CheckoutStarted]
+
+  - system: PromotionService
+    policy:
+      name: Apply an active promotion at checkout
+      rules:
+        - { when: CheckoutStarted, then: ApplyPromotion }
+    command: ApplyPromotion
+    events: [DiscountApplied]
+
+  - system: CheckoutService
+    startedBy: Checkout/Customer
+    trigger: { name: Customer details form, kind: frontend }
+    command: ProvideCustomerDetails
+    events: [CustomerDetailsProvided]
+
+  - system: CheckoutService
+    startedBy: Checkout/Customer
+    trigger: { name: Delivery options, kind: frontend }
+    command: SelectDeliveryOption
+    events: [DeliveryOptionSelected]
+
+  - system: CheckoutService
+    startedBy: Checkout/Customer
+    trigger: { name: Complete checkout, kind: frontend }
+    command: CompleteCheckout
+    events: [CheckoutCompleted]
+
+  - system: PaymentService
+    policy:
+      name: Start payment for completed checkout
+      rules:
+        - { when: CheckoutCompleted, then: InitiatePayment }
+    command: InitiatePayment
+    events: [PaymentCreated]
+
+  - system: PaymentProvider
+    policy:
+      name: Authorize new payments
+      rules:
+        - { when: PaymentCreated, then: AuthorizeCharge }
+    command: AuthorizeCharge
+    events: [ChargeAuthorized, ChargeDeclined]
+
+  - system: PaymentService
+    policy:
+      name: Record authorization results
+      rules:
+        - { when: ChargeAuthorized, then: RecordAuthorization }
+        - { when: ChargeDeclined, then: RecordAuthorization }
+    command: RecordAuthorization
+    events: [PaymentAuthorized, PaymentFailed]
+
+  - system: PaymentProvider
+    policy:
+      name: Capture authorized payments
+      rules:
+        - when: PaymentAuthorized
+          then: CaptureCharge
+          condition: { field: payment.status, operator: eq, value: authorized }
+    command: CaptureCharge
+    events: [ChargeCaptured]
+
+  - system: PaymentService
+    policy:
+      name: Record payment captures
+      rules:
+        - { when: ChargeCaptured, then: RecordCapture }
+    command: RecordCapture
+    events: [PaymentCaptured]
+
+  - system: OrderManagementService
+    policy:
+      name: Place orders after successful payment
+      rules:
+        - { when: PaymentCaptured, then: PlaceOrder }
+    command: PlaceOrder
+    events: [OrderPlaced]
+
+  - system: OrderManagementService
+    startedBy: Checkout/Customer
+    trigger: { name: Customer orders page, kind: frontend }
+    reads: [ViewCustomerOrders]
+
+readModels:
+  - name: ViewCustomerOrders
+    system: OrderManagementService
+    from: [OrderPlaced, OrderCanceled, OrderClosed]

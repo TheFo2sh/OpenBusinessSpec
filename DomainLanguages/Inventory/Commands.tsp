@@ -53,3 +53,27 @@ model ReleaseStockReservation {
     reservation: StockReservation;
   };
 }
+
+@readModel
+@command("3b4c7ffc-ce2e-44f6-93fd-1a0025de9100")
+@icon("/iconify/mdi/package-variant.svg")
+model ViewStockLevels {
+  input: {
+    variantReference?: string;
+    locationReference?: string;
+  };
+  output: {
+    stocks: InventoryStock[];
+  };
+}
+
+@command("4581b216-93ec-498b-a2e1-2f5cf7705425")
+@icon("/iconify/mdi/package-variant-closed-check.svg")
+model ConsumeStockReservation {
+  input: {
+    reservationReference: string;
+  };
+  output: {
+    reservation: StockReservation;
+  };
+}

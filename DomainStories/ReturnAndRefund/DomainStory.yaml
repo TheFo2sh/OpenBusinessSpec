@@ -1,0 +1,36 @@
+name: Return an item and get a refund
+description: >-
+  A customer requests a return. The returns desk approves or rejects the
+  request and receives approved items. The payment service refunds the
+  customer and the inventory manager receives the returned stock.
+
+sentences:
+  - actor: Customer
+    activity: requests
+    workObject: ReturnRequest
+    recipient: ReturnsService
+
+  - actor: ReturnsDesk
+    activity: approves
+    workObject: ReturnRequest
+    recipient: ReturnsService
+
+  - actor: ReturnsDesk
+    activity: rejects
+    workObject: ReturnRequest
+    recipient: ReturnsService
+
+  - actor: ReturnsDesk
+    activity: receives
+    workObject: ReturnRequest
+    recipient: ReturnsService
+
+  - actor: Payment/PaymentService
+    activity: refunds the payment for
+    workObject: Payment/Payment
+    recipient: Payment/PaymentProvider
+
+  - actor: Inventory/InventoryManager
+    activity: receives returned
+    workObject: Inventory/InventoryStock
+    recipient: Inventory/InventoryService

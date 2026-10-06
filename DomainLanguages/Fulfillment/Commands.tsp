@@ -48,3 +48,15 @@ model CancelFulfillment {
     fulfillment: Fulfillment;
   };
 }
+
+@readModel
+@command("8665cca6-bead-4fee-b98e-4bdb95101c3a")
+@icon("/iconify/mdi/clipboard-list-outline.svg")
+model ListFulfillmentsToShip {
+  input: {
+    locationReference?: string;
+  };
+  output: {
+    fulfillments: Fulfillment[];
+  };
+}

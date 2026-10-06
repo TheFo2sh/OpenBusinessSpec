@@ -1,0 +1,22 @@
+Name: Check out and place an order
+PackageId: M1Spec.DomainStories.CheckoutAndPlaceOrder
+Version: 0.0.1
+Description: A customer completes checkout, pays, and gets an order placed.
+Icon: "/iconify/mdi/clipboard-check-outline.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.Checkout
+    Version: 0.0.1
+    Alias: Checkout
+  - PackageId: M1Spec.DomainLanguages.ShoppingCart
+    Version: 0.0.2
+    Alias: ShoppingCart
+  - PackageId: M1Spec.DomainLanguages.Order
+    Version: 0.0.2
+    Alias: Order
+  - PackageId: M1Spec.DomainLanguages.Promotion
+    Version: 0.0.2
+    Alias: Promotion
+  - PackageId: M1Spec.DomainLanguages.Payment
+    Version: 0.0.2
+    Alias: Payment

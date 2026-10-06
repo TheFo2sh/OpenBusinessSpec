@@ -1,6 +1,6 @@
 Name: ShoppingCart
 Icon: "/iconify/mdi/cart-outline.svg"
-Version: 0.0.1
+Version: 0.0.2
 Description: Managing a shopper's selected items before checkout.
 Color: "#FF9800"
 Publisher: M1Spec

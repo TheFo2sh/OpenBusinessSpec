@@ -1,0 +1,81 @@
+systems: [OrderManagementService, FulfillmentService, PaymentService, PaymentProvider, InventoryService]
+
+flows:
+  - system: OrderManagementService
+    startedBy: Order/Customer
+    trigger: { name: Customer order page, kind: frontend }
+    command: CancelOrder
+    events: [OrderCanceled]
+
+  - system: FulfillmentService
+    policy:
+      name: Cancel fulfillment for canceled orders
+      rules:
+        - { when: OrderCanceled, then: CancelFulfillment }
+    command: CancelFulfillment
+    events: [FulfillmentCanceled]
+
+  - system: PaymentService
+    policy:
+      name: Cancel or refund payment for canceled orders
+      rules:
+        - when: OrderCanceled
+          then: CancelPayment
+          condition: { field: payment.status, operator: eq, value: pending }
+        - when: OrderCanceled
+          then: CancelPayment
+          condition: { field: payment.status, operator: eq, value: authorized }
+        - when: OrderCanceled
+          then: RefundPayment
+          condition: { field: payment.status, operator: eq, value: captured }
+
+  - system: PaymentService
+    command: CancelPayment
+    events: [PaymentCanceled]
+
+  - system: PaymentProvider
+    policy:
+      name: Void canceled authorizations
+      rules:
+        - { when: PaymentCanceled, then: VoidAuthorization }
+    command: VoidAuthorization
+    events: [AuthorizationVoided]
+
+  - system: PaymentService
+    command: RefundPayment
+    events: [RefundRequested]
+
+  - system: PaymentProvider
+    policy:
+      name: Pay back requested refunds
+      rules:
+        - { when: RefundRequested, then: RefundCharge }
+    command: RefundCharge
+    events: [ChargeRefunded, RefundDeclined]
+
+  - system: PaymentService
+    policy:
+      name: Record refund results
+      rules:
+        - { when: ChargeRefunded, then: RecordRefund }
+        - { when: RefundDeclined, then: RecordRefund }
+    command: RecordRefund
+    events: [RefundSucceeded, RefundFailed]
+
+  - system: InventoryService
+    policy:
+      name: Release reservations for canceled orders
+      rules:
+        - { when: OrderCanceled, then: ReleaseStockReservation }
+    command: ReleaseStockReservation
+    events: [StockReservationReleased]
+
+  - system: OrderManagementService
+    startedBy: Order/Customer
+    trigger: { name: Customer order status, kind: frontend }
+    reads: [ViewCustomerOrders]
+
+readModels:
+  - name: ViewCustomerOrders
+    system: OrderManagementService
+    from: [OrderPlaced, OrderCanceled, OrderClosed]

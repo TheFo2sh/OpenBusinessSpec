@@ -1,0 +1,16 @@
+Name: Fulfil and deliver an order
+PackageId: M1Spec.DomainStories.FulfilOrder
+Version: 0.0.1
+Description: A warehouse fulfils an order, a carrier delivers it, and the order is closed.
+Icon: "/iconify/mdi/truck-delivery-outline.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.Order
+    Version: 0.0.2
+    Alias: Order
+  - PackageId: M1Spec.DomainLanguages.Fulfillment
+    Version: 0.0.2
+    Alias: Fulfillment
+  - PackageId: M1Spec.DomainLanguages.Inventory
+    Version: 0.0.3
+    Alias: Inventory

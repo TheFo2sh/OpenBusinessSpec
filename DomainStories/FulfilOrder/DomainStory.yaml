@@ -1,0 +1,31 @@
+name: Fulfil and deliver an order
+description: >-
+  When an order is placed, the fulfillment service prepares it for the
+  warehouse. A warehouse operator ships the fulfillment, the carrier reports
+  delivery, reserved stock is consumed, and the order is closed.
+
+sentences:
+  - actor: Order/OrderManagementService
+    activity: places
+    workObject: Order
+    recipient: Fulfillment/FulfillmentService
+
+  - actor: WarehouseOperator
+    activity: ships
+    workObject: Fulfillment
+    recipient: FulfillmentService
+
+  - actor: DeliveryCarrier
+    activity: delivers
+    workObject: Fulfillment
+    recipient: FulfillmentService
+
+  - actor: FulfillmentService
+    activity: closes
+    workObject: Order
+    recipient: Order/OrderManagementService
+
+  - actor: Inventory/InventoryService
+    activity: consumes reservation for
+    workObject: StockReservation
+    recipient: FulfillmentService

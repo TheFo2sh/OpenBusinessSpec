@@ -1,0 +1,69 @@
+systems: [ReturnsService, PaymentService, PaymentProvider, InventoryService]
+
+flows:
+  - system: ReturnsService
+    startedBy: Customer
+    trigger: { name: Customer return form, kind: frontend }
+    command: RequestReturn
+    events: [ReturnRequested]
+
+  - system: ReturnsService
+    startedBy: ReturnsDesk
+    trigger: { name: Return approval desk, kind: frontend }
+    command: ApproveReturn
+    events: [ReturnApproved]
+
+  - system: ReturnsService
+    startedBy: ReturnsDesk
+    trigger: { name: Return approval desk, kind: frontend }
+    command: RejectReturn
+    events: [ReturnRejected]
+
+  - system: ReturnsService
+    startedBy: ReturnsDesk
+    trigger: { name: Receive returned items, kind: frontend }
+    command: ReceiveReturn
+    events: [ReturnReceived]
+
+  - system: PaymentService
+    policy:
+      name: Refund received returns
+      rules:
+        - { when: ReturnReceived, then: RefundPayment }
+    command: RefundPayment
+    events: [RefundRequested]
+
+  - system: PaymentProvider
+    policy:
+      name: Pay back requested refunds
+      rules:
+        - { when: RefundRequested, then: RefundCharge }
+    command: RefundCharge
+    events: [ChargeRefunded, RefundDeclined]
+
+  - system: PaymentService
+    policy:
+      name: Record refund results
+      rules:
+        - { when: ChargeRefunded, then: RecordRefund }
+        - { when: RefundDeclined, then: RecordRefund }
+    command: RecordRefund
+    events: [RefundSucceeded, RefundFailed]
+
+  - system: InventoryService
+    policy:
+      name: Restock received returns
+      rules:
+        - { when: ReturnReceived, then: ReceiveStock }
+    command: ReceiveStock
+    events: [StockReceived]
+
+  - system: ReturnsService
+    startedBy: ReturnsDesk
+    trigger: { name: Returns awaiting approval, kind: frontend }
+    reads: [ListReturnsAwaitingApproval]
+
+readModels:
+  - name: ListReturnsAwaitingApproval
+    system: ReturnsService
+    from: [ReturnRequested, ReturnApproved, ReturnRejected]

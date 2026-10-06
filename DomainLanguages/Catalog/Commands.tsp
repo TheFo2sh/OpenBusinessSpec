@@ -50,3 +50,15 @@ model ArchiveProduct {
     product: Product;
   };
 }
+
+@readModel
+@command("62f9e8a8-ac8f-46a8-b85f-878aa47e6f56")
+@icon("/iconify/mdi/tag-multiple-outline.svg")
+model ListPublishedProducts {
+  input: {
+    category?: string;
+  };
+  output: {
+    products: Product[];
+  };
+}

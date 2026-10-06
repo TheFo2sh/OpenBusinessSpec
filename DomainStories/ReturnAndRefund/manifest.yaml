@@ -1,0 +1,16 @@
+Name: Return an item and get a refund
+PackageId: M1Spec.DomainStories.ReturnAndRefund
+Version: 0.0.1
+Description: A requested return is approved, received, refunded, and restocked.
+Icon: "/iconify/mdi/cash-refund.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.Returns
+    Version: 0.0.2
+    Alias: Returns
+  - PackageId: M1Spec.DomainLanguages.Payment
+    Version: 0.0.2
+    Alias: Payment
+  - PackageId: M1Spec.DomainLanguages.Inventory
+    Version: 0.0.3
+    Alias: Inventory
