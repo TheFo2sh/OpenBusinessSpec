@@ -11,3 +11,15 @@ model GuestCheckedIn {
 model GuestCheckedOut {
   stay: Stay;
 }
+
+@icon("/iconify/mdi/bed-clock.svg")
+@event("40000000-0000-4000-8000-000000000014", source:"/stays")
+model ExpectedArrivalRegistered {
+  stay: Stay;
+}
+
+@icon("/iconify/mdi/account-cancel-outline.svg")
+@event("40000000-0000-4000-8000-000000000015", source:"/stays")
+model NoShowRecorded {
+  stay: Stay;
+}
