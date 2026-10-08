@@ -1,0 +1,41 @@
+name: Book and guarantee a stay
+description: >-
+  A traveler requests a room for specific dates. The reservation service
+  authorizes a payment guarantee, the property confirms the reservation, and
+  the inventory system holds the room.
+
+sentences:
+  - actor: Reservation/Traveler
+    activity: books
+    workObject: Reservation/ReservationOption
+    recipient: Reservation/ReservationService
+
+  - actor: Reservation/ReservationService
+    activity: requests a payment guarantee for
+    workObject: Reservation/Reservation
+    recipient: Payment/PaymentService
+
+  - actor: Payment/PaymentService
+    activity: asks the provider to authorize
+    workObject: Payment/Charge
+    recipient: Payment/PaymentProvider
+
+  - actor: Payment/PaymentService
+    activity: records the authorization for
+    workObject: Payment/Payment
+    recipient: Reservation/ReservationService
+
+  - actor: Reservation/AccommodationReservationSystem
+    activity: accepts
+    workObject: Reservation/Reservation
+    recipient: Reservation/ReservationService
+
+  - actor: Reservation/ReservationService
+    activity: confirms
+    workObject: Reservation/Reservation
+    recipient: Reservation/Traveler
+
+  - actor: PropertyAvailability/InventoryManagementSystem
+    activity: holds
+    workObject: PropertyAvailability/RoomAvailability
+    recipient: Reservation/ReservationService

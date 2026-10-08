@@ -60,3 +60,60 @@ model CancelReservation {
   };
   context: {};
 }
+
+@command("20000000-0000-4000-8000-000000000015")
+@icon("/iconify/mdi/home-check-outline.svg")
+model ConfirmPropertyReservation {
+  input: {
+    reservationReference: string;
+    option: ReservationOption;
+  };
+  computed: {};
+  output: {
+    reservationReference: string;
+  };
+  context: {};
+}
+
+@command("20000000-0000-4000-8000-000000000016")
+@icon("/iconify/mdi/credit-card-check-outline.svg")
+model RecordGuaranteeAuthorization {
+  input: {
+    reservationReference: string;
+    paymentId: string;
+  };
+  computed: {};
+  output: {
+    reservation: Reservation;
+  };
+  context: {};
+}
+
+@command("20000000-0000-4000-8000-000000000018")
+@icon("/iconify/mdi/credit-card-remove-outline.svg")
+model FailReservationGuarantee {
+  input: {
+    reservationReference: string;
+    reason?: string;
+  };
+  computed: {};
+  output: {
+    reservation: Reservation;
+  };
+  context: {};
+}
+
+@readModel
+@rest(Get, "/reservations/{reservationReference}/confirmation")
+@command("20000000-0000-4000-8000-000000000017")
+@icon("/iconify/mdi/clipboard-check-outline.svg")
+model ViewReservationConfirmation {
+  input: {
+    reservationReference: string;
+  };
+  computed: {};
+  output: {
+    reservation: Reservation;
+  };
+  context: {};
+}

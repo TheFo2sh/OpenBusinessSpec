@@ -23,3 +23,10 @@ model RoomSalesClosed {
 model RoomSalesOpened {
   availability: RoomAvailability;
 }
+
+@icon("/iconify/mdi/bed-clock.svg")
+@event("30000000-0000-4000-8000-000000000021", source:"/room-availability")
+model RoomAvailabilityHeld {
+  availability: RoomAvailability;
+  reservationReference: string;
+}

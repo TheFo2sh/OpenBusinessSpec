@@ -1,0 +1,16 @@
+Name: Book and guarantee a stay
+PackageId: M1Spec.DomainStories.BookStay
+Version: 0.0.1
+Description: A traveler books a room, guarantees the reservation with an authorization, and receives confirmation.
+Icon: "/iconify/mdi/bed-check.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.Reservation
+    Version: 0.0.2
+    Alias: Reservation
+  - PackageId: M1Spec.DomainLanguages.PropertyAvailability
+    Version: 0.0.2
+    Alias: PropertyAvailability
+  - PackageId: M1Spec.DomainLanguages.Payment
+    Version: 0.0.2
+    Alias: Payment
