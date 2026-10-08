@@ -1,0 +1,35 @@
+name: Manage availability and rates
+description: >-
+  A property manager sets room availability and rate plans, closes or reopens
+  sales, and distributes every update to connected channels.
+
+sentences:
+  - actor: PropertyManager
+    activity: sets
+    workObject: RoomAvailability
+    recipient: InventoryManagementSystem
+
+  - actor: PropertyManager
+    activity: sets
+    workObject: RatePlan
+    recipient: InventoryManagementSystem
+
+  - actor: PropertyManager
+    activity: closes sales for
+    workObject: RoomAvailability
+    recipient: InventoryManagementSystem
+
+  - actor: PropertyManager
+    activity: reopens sales for
+    workObject: RoomAvailability
+    recipient: InventoryManagementSystem
+
+  - actor: InventoryManagementSystem
+    activity: publishes changes to
+    workObject: RatePlan
+    recipient: DistributionSystem
+
+  - actor: PropertyManager
+    activity: views
+    workObject: RoomAvailability
+    recipient: InventoryManagementSystem

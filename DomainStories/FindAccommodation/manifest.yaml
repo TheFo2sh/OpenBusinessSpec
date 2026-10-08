@@ -9,5 +9,5 @@ Dependencies:
     Version: 0.0.2
     Alias: Discovery
   - PackageId: M1Spec.DomainLanguages.PropertyAvailability
-    Version: 0.0.3
+    Version: 0.0.4
     Alias: PropertyAvailability

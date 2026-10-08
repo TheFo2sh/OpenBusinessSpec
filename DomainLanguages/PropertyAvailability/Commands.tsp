@@ -98,3 +98,34 @@ model ReleaseRoom {
   };
   context: {};
 }
+
+@command("30000000-0000-4000-8000-000000000024")
+@icon("/iconify/mdi/cloud-upload-outline.svg")
+model PublishAvailabilityChanges {
+  input: {
+    availability?: RoomAvailability;
+    ratePlan?: RatePlan;
+  };
+  computed: {};
+  output: {
+    publicationReference: string;
+  };
+  context: {};
+}
+
+@readModel
+@rest(Get, "/properties/{propertyId}/availability")
+@command("30000000-0000-4000-8000-000000000026")
+@icon("/iconify/mdi/calendar-month-outline.svg")
+model ViewAvailabilityCalendar {
+  input: {
+    propertyId: string;
+    fromDate?: plainDate;
+    toDate?: plainDate;
+  };
+  computed: {};
+  output: {
+    availability: RoomAvailability[];
+  };
+  context: {};
+}

@@ -1,0 +1,49 @@
+systems: [InventoryManagementSystem, DistributionSystem]
+
+flows:
+  - system: InventoryManagementSystem
+    startedBy: PropertyManager
+    trigger: { name: Availability calendar, kind: frontend }
+    command: SetRoomAvailability
+    events: [RoomAvailabilitySet]
+
+  - system: InventoryManagementSystem
+    startedBy: PropertyManager
+    trigger: { name: Rate plan editor, kind: frontend }
+    command: SetRatePlan
+    events: [RatePlanSet]
+
+  - system: InventoryManagementSystem
+    startedBy: PropertyManager
+    trigger: { name: Close room sales, kind: frontend }
+    command: CloseRoomSales
+    events: [RoomSalesClosed]
+
+  - system: InventoryManagementSystem
+    startedBy: PropertyManager
+    trigger: { name: Open room sales, kind: frontend }
+    command: OpenRoomSales
+    events: [RoomSalesOpened]
+
+  - system: DistributionSystem
+    policy:
+      name: Distribute property availability and rate changes
+      rules:
+        - { when: RoomAvailabilitySet, then: PublishAvailabilityChanges }
+        - { when: RatePlanSet, then: PublishAvailabilityChanges }
+        - { when: RoomSalesClosed, then: PublishAvailabilityChanges }
+        - { when: RoomSalesOpened, then: PublishAvailabilityChanges }
+        - { when: RoomAvailabilityHeld, then: PublishAvailabilityChanges }
+        - { when: RoomAvailabilityReleased, then: PublishAvailabilityChanges }
+    command: PublishAvailabilityChanges
+    events: [AvailabilityChangesPublished]
+
+  - system: InventoryManagementSystem
+    startedBy: PropertyManager
+    trigger: { name: Property availability calendar view, kind: frontend }
+    reads: [ViewAvailabilityCalendar]
+
+readModels:
+  - name: ViewAvailabilityCalendar
+    system: InventoryManagementSystem
+    from: [RoomAvailabilitySet, RatePlanSet, RoomSalesClosed, RoomSalesOpened, RoomAvailabilityHeld, RoomAvailabilityReleased]
