@@ -23,6 +23,9 @@ model ReservationModified {
 model ReservationCancelled {
   reservation: Reservation;
   cancellationTerms: string;
+  cancellationFee?: float64;
+  refundableAmount?: float64;
+  currency?: string;
 }
 
 @icon("/iconify/mdi/home-check-outline.svg")

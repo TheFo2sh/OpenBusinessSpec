@@ -1,0 +1,138 @@
+systems: [ReservationService, InventoryManagementSystem, PaymentService, PaymentProvider]
+
+flows:
+  - system: ReservationService
+    startedBy: Reservation/Traveler
+    trigger: { name: Modify reservation form, kind: frontend }
+    command: Reservation/ModifyReservation
+    events: [Reservation/ReservationModified]
+
+  - system: ReservationService
+    startedBy: Reservation/Traveler
+    trigger: { name: Cancel reservation form, kind: frontend }
+    command: Reservation/CancelReservation
+    events: [Reservation/ReservationCancelled]
+
+  - system: InventoryManagementSystem
+    policy:
+      name: Release the previous room for a modified reservation
+      rules:
+        - { when: Reservation/ReservationModified, then: PropertyAvailability/ReleaseRoom }
+    command: PropertyAvailability/ReleaseRoom
+    events: [PropertyAvailability/RoomAvailabilityReleased]
+
+  - system: InventoryManagementSystem
+    policy:
+      name: Hold the replacement room for a modified reservation
+      rules:
+        - { when: Reservation/ReservationModified, then: PropertyAvailability/HoldRoom }
+    command: PropertyAvailability/HoldRoom
+    events: [PropertyAvailability/RoomAvailabilityHeld]
+
+  - system: InventoryManagementSystem
+    policy:
+      name: Release rooms for a canceled reservation
+      rules:
+        - { when: Reservation/ReservationCancelled, then: PropertyAvailability/ReleaseRoom }
+    command: PropertyAvailability/ReleaseRoom
+    events: [PropertyAvailability/RoomAvailabilityReleased]
+
+  - system: PaymentService
+    policy:
+      name: Cancel an outstanding reservation authorization
+      rules:
+        - when: Reservation/ReservationCancelled
+          then: Payment/CancelPayment
+          condition: { field: payment.status, operator: eq, value: authorized }
+    command: Payment/CancelPayment
+    events: [Payment/PaymentCanceled]
+
+  - system: PaymentProvider
+    policy:
+      name: Void the canceled authorization
+      rules:
+        - { when: Payment/PaymentCanceled, then: Payment/VoidAuthorization }
+    command: Payment/VoidAuthorization
+    events: [Payment/AuthorizationVoided]
+
+  - system: PaymentService
+    policy:
+      name: Refund captured reservation payments
+      rules:
+        - when: Reservation/ReservationCancelled
+          then: Payment/RefundPayment
+          condition: { field: payment.status, operator: eq, value: captured }
+    command: Payment/RefundPayment
+    events: [Payment/RefundRequested]
+
+  - system: PaymentProvider
+    policy:
+      name: Return refundable reservation payments
+      rules:
+        - { when: Payment/RefundRequested, then: Payment/RefundCharge }
+    command: Payment/RefundCharge
+    events: [Payment/ChargeRefunded, Payment/RefundDeclined]
+
+  - system: PaymentService
+    policy:
+      name: Record refund results
+      rules:
+        - { when: Payment/ChargeRefunded, then: Payment/RecordRefund }
+        - { when: Payment/RefundDeclined, then: Payment/RecordRefund }
+    command: Payment/RecordRefund
+    events: [Payment/RefundSucceeded, Payment/RefundFailed]
+
+  - system: PaymentService
+    policy:
+      name: Collect any cancellation fee
+      rules:
+        - when: Reservation/ReservationCancelled
+          then: Payment/InitiatePayment
+          condition: { field: reservation.cancellationPolicy.feeAmount, operator: gt, value: "0" }
+    command: Payment/InitiatePayment
+    events: [Payment/PaymentCreated]
+
+  - system: PaymentProvider
+    policy:
+      name: Authorize cancellation fee payments
+      rules:
+        - { when: Payment/PaymentCreated, then: Payment/AuthorizeCharge }
+    command: Payment/AuthorizeCharge
+    events: [Payment/ChargeAuthorized, Payment/ChargeDeclined]
+
+  - system: PaymentService
+    policy:
+      name: Record cancellation fee authorization
+      rules:
+        - { when: Payment/ChargeAuthorized, then: Payment/RecordAuthorization }
+        - { when: Payment/ChargeDeclined, then: Payment/RecordAuthorization }
+    command: Payment/RecordAuthorization
+    events: [Payment/PaymentAuthorized, Payment/PaymentFailed]
+
+  - system: PaymentProvider
+    policy:
+      name: Capture authorized cancellation fees
+      rules:
+        - when: Payment/PaymentAuthorized
+          then: Payment/CaptureCharge
+          condition: { field: payment.status, operator: eq, value: authorized }
+    command: Payment/CaptureCharge
+    events: [Payment/ChargeCaptured]
+
+  - system: PaymentService
+    policy:
+      name: Record cancellation fee capture
+      rules:
+        - { when: Payment/ChargeCaptured, then: Payment/RecordCapture }
+    command: Payment/RecordCapture
+    events: [Payment/PaymentCaptured]
+
+  - system: ReservationService
+    startedBy: Reservation/Traveler
+    trigger: { name: Upcoming reservations, kind: frontend }
+    reads: [ListUpcomingReservations]
+
+readModels:
+  - name: ListUpcomingReservations
+    system: ReservationService
+    from: [ReservationCreated, ReservationConfirmed, ReservationModified, ReservationCancelled]

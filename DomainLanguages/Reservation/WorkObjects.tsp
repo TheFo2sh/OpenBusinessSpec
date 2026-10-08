@@ -35,6 +35,7 @@ model ReservationOption {
   totalPrice: float64;
   currency: string;
   cancellationTerms: string;
+  cancellationPolicy?: CancellationPolicy;
 }
 
 enum ReservationStatus {
@@ -63,5 +64,14 @@ model ReservationGuarantee {
   type: GuaranteeType;
   status: GuaranteeStatus;
   amount?: float64;
+  currency?: string;
+}
+
+@workObject("20000000-0000-4000-8000-000000000023")
+@icon("/iconify/mdi/clipboard-text-clock-outline.svg")
+model CancellationPolicy {
+  terms: string;
+  freeCancellationUntil?: utcDateTime;
+  feeAmount?: float64;
   currency?: string;
 }

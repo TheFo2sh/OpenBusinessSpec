@@ -81,3 +81,20 @@ model HoldRoom {
   };
   context: {};
 }
+
+@command("30000000-0000-4000-8000-000000000022")
+@icon("/iconify/mdi/bed-minus-outline.svg")
+model ReleaseRoom {
+  input: {
+    property: Property;
+    roomType: RoomType;
+    date: plainDate;
+    rooms: int32;
+    reservationReference: string;
+  };
+  computed: {};
+  output: {
+    availability: RoomAvailability;
+  };
+  context: {};
+}

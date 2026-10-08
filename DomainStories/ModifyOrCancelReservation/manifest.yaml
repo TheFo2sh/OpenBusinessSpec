@@ -1,8 +1,8 @@
-Name: Book and guarantee a stay
-PackageId: M1Spec.DomainStories.BookStay
+Name: Modify or cancel a reservation
+PackageId: M1Spec.DomainStories.ModifyOrCancelReservation
 Version: 0.0.1
-Description: A traveler books a room, guarantees the reservation with an authorization, and receives confirmation.
-Icon: "/iconify/mdi/bed-check.svg"
+Description: A traveler changes or cancels a reservation, releasing availability and settling any cancellation amount.
+Icon: "/iconify/mdi/clipboard-edit-outline.svg"
 Publisher: M1Spec
 Dependencies:
   - PackageId: M1Spec.DomainLanguages.Reservation

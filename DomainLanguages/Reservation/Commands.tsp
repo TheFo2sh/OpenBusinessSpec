@@ -117,3 +117,19 @@ model ViewReservationConfirmation {
   };
   context: {};
 }
+
+@readModel
+@rest(Get, "/reservations/upcoming")
+@command("20000000-0000-4000-8000-000000000022")
+@icon("/iconify/mdi/calendar-clock-outline.svg")
+model ListUpcomingReservations {
+  input: {
+    travelerId: string;
+    fromDate?: plainDate;
+  };
+  computed: {};
+  output: {
+    reservations: Reservation[];
+  };
+  context: {};
+}

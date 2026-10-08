@@ -1,0 +1,36 @@
+name: Modify or cancel a reservation
+description: >-
+  A traveler changes stay dates or room type, or cancels the reservation.
+  Availability is moved or released, and the payment service handles refunds,
+  authorization release, or a cancellation fee under the reservation policy.
+
+sentences:
+  - actor: Reservation/Traveler
+    activity: changes
+    workObject: Reservation/Reservation
+    recipient: Reservation/ReservationService
+
+  - actor: Reservation/Traveler
+    activity: cancels
+    workObject: Reservation/Reservation
+    recipient: Reservation/ReservationService
+
+  - actor: Reservation/ReservationService
+    activity: applies
+    workObject: Reservation/CancellationPolicy
+    recipient: Payment/PaymentService
+
+  - actor: Reservation/ReservationService
+    activity: moves or releases
+    workObject: PropertyAvailability/RoomAvailability
+    recipient: PropertyAvailability/InventoryManagementSystem
+
+  - actor: Payment/PaymentService
+    activity: refunds, releases, or charges
+    workObject: Payment/Charge
+    recipient: Payment/PaymentProvider
+
+  - actor: Reservation/Traveler
+    activity: views upcoming
+    workObject: Reservation/Reservation
+    recipient: Reservation/ReservationService
