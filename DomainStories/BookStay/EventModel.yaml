@@ -1,0 +1,80 @@
+systems: [ReservationService, AccommodationReservationSystem, PaymentService, PaymentProvider, InventoryManagementSystem]
+
+flows:
+  - system: ReservationService
+    startedBy: Reservation/Traveler
+    trigger: { name: Book a stay form, kind: frontend }
+    command: Reservation/CreateReservation
+    events: [Reservation/ReservationCreated]
+
+  - system: PaymentService
+    policy:
+      name: Authorize the reservation guarantee
+      rules:
+        - { when: Reservation/ReservationCreated, then: Payment/InitiatePayment }
+    command: Payment/InitiatePayment
+    events: [Payment/PaymentCreated]
+
+  - system: PaymentProvider
+    policy:
+      name: Authorize reservation payment
+      rules:
+        - { when: Payment/PaymentCreated, then: Payment/AuthorizeCharge }
+    command: Payment/AuthorizeCharge
+    events: [Payment/ChargeAuthorized, Payment/ChargeDeclined]
+
+  - system: PaymentService
+    policy:
+      name: Record authorization results
+      rules:
+        - { when: Payment/ChargeAuthorized, then: Payment/RecordAuthorization }
+        - { when: Payment/ChargeDeclined, then: Payment/RecordAuthorization }
+    command: Payment/RecordAuthorization
+    events: [Payment/PaymentAuthorized, Payment/PaymentFailed]
+
+  - system: ReservationService
+    policy:
+      name: Record the reservation guarantee result
+      rules:
+        - { when: Payment/PaymentAuthorized, then: Reservation/RecordGuaranteeAuthorization }
+        - { when: Payment/PaymentFailed, then: Reservation/FailReservationGuarantee }
+    command: Reservation/RecordGuaranteeAuthorization
+    events: [Reservation/ReservationGuaranteeSecured]
+
+  - system: ReservationService
+    command: Reservation/FailReservationGuarantee
+    events: [Reservation/ReservationGuaranteeFailed]
+
+  - system: AccommodationReservationSystem
+    policy:
+      name: Confirm reservations with a secured guarantee
+      rules:
+        - { when: Reservation/ReservationGuaranteeSecured, then: Reservation/ConfirmPropertyReservation }
+    command: Reservation/ConfirmPropertyReservation
+    events: [Reservation/AccommodationReservationAccepted]
+
+  - system: ReservationService
+    policy:
+      name: Record property reservation acceptance
+      rules:
+        - { when: Reservation/AccommodationReservationAccepted, then: Reservation/ConfirmReservation }
+    command: Reservation/ConfirmReservation
+    events: [Reservation/ReservationConfirmed]
+
+  - system: InventoryManagementSystem
+    policy:
+      name: Hold rooms for confirmed reservations
+      rules:
+        - { when: Reservation/ReservationConfirmed, then: PropertyAvailability/HoldRoom }
+    command: PropertyAvailability/HoldRoom
+    events: [PropertyAvailability/RoomAvailabilityHeld]
+
+  - system: ReservationService
+    startedBy: Reservation/Traveler
+    trigger: { name: Booking confirmation page, kind: frontend }
+    reads: [ViewReservationConfirmation]
+
+readModels:
+  - name: ViewReservationConfirmation
+    system: ReservationService
+    from: [Reservation/ReservationCreated, Reservation/ReservationGuaranteeSecured, Reservation/ReservationGuaranteeFailed, Reservation/ReservationConfirmed]

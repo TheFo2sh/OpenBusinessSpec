@@ -23,3 +23,25 @@ model RoomSalesClosed {
 model RoomSalesOpened {
   availability: RoomAvailability;
 }
+
+@icon("/iconify/mdi/bed-clock.svg")
+@event("30000000-0000-4000-8000-000000000021", source:"/room-availability")
+model RoomAvailabilityHeld {
+  availability: RoomAvailability;
+  reservationReference: string;
+}
+
+@icon("/iconify/mdi/bed-minus-outline.svg")
+@event("30000000-0000-4000-8000-000000000023", source:"/room-availability")
+model RoomAvailabilityReleased {
+  availability: RoomAvailability;
+  reservationReference: string;
+}
+
+@icon("/iconify/mdi/cloud-check-outline.svg")
+@event("30000000-0000-4000-8000-000000000025", source:"/distribution-publications")
+model AvailabilityChangesPublished {
+  publicationReference: string;
+  availability?: RoomAvailability;
+  ratePlan?: RatePlan;
+}

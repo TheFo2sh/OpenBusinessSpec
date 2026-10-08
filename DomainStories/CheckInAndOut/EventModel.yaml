@@ -1,0 +1,88 @@
+systems: [ReservationService, StayManagementSystem, PaymentService, PaymentProvider]
+
+flows:
+  - system: ReservationService
+    command: Reservation/ConfirmReservation
+    events: [Reservation/ReservationConfirmed]
+
+  - system: StayManagementSystem
+    policy:
+      name: Register arrivals from confirmed reservations
+      rules:
+        - { when: Reservation/ReservationConfirmed, then: StayOperations/RegisterExpectedArrival }
+    command: StayOperations/RegisterExpectedArrival
+    events: [StayOperations/ExpectedArrivalRegistered]
+
+  - system: StayManagementSystem
+    startedBy: StayOperations/FrontDeskStaff
+    trigger: { name: Guest check-in, kind: frontend }
+    command: StayOperations/CheckInGuest
+    events: [StayOperations/GuestCheckedIn]
+
+  - system: StayManagementSystem
+    startedBy: StayOperations/FrontDeskStaff
+    trigger: { name: Guest check-out, kind: frontend }
+    command: StayOperations/CheckOutGuest
+    events: [StayOperations/GuestCheckedOut]
+
+  - system: PaymentService
+    policy:
+      name: Collect payment for a completed stay
+      rules:
+        - { when: StayOperations/GuestCheckedOut, then: Payment/InitiatePayment }
+    command: Payment/InitiatePayment
+    events: [Payment/PaymentCreated]
+
+  - system: PaymentProvider
+    policy:
+      name: Authorize stay payment
+      rules:
+        - { when: Payment/PaymentCreated, then: Payment/AuthorizeCharge }
+    command: Payment/AuthorizeCharge
+    events: [Payment/ChargeAuthorized, Payment/ChargeDeclined]
+
+  - system: PaymentService
+    policy:
+      name: Record stay payment authorization
+      rules:
+        - { when: Payment/ChargeAuthorized, then: Payment/RecordAuthorization }
+        - { when: Payment/ChargeDeclined, then: Payment/RecordAuthorization }
+    command: Payment/RecordAuthorization
+    events: [Payment/PaymentAuthorized, Payment/PaymentFailed]
+
+  - system: PaymentProvider
+    policy:
+      name: Capture authorized stay payments
+      rules:
+        - when: Payment/PaymentAuthorized
+          then: Payment/CaptureCharge
+          condition: { field: payment.status, operator: eq, value: authorized }
+    command: Payment/CaptureCharge
+    events: [Payment/ChargeCaptured]
+
+  - system: PaymentService
+    policy:
+      name: Record stay payment capture
+      rules:
+        - { when: Payment/ChargeCaptured, then: Payment/RecordCapture }
+    command: Payment/RecordCapture
+    events: [Payment/PaymentCaptured]
+
+  - system: StayManagementSystem
+    startedBy: StayOperations/FrontDeskStaff
+    trigger: { name: Arrivals and no-shows desk, kind: frontend }
+    reads: [ListTodaysArrivals, ListNoShows]
+
+  - system: StayManagementSystem
+    trigger: { name: Mark no-shows after arrival, kind: time, cron: "0 23 * * *" }
+    command: StayOperations/RecordNoShow
+    events: [StayOperations/NoShowRecorded]
+
+readModels:
+  - name: ListTodaysArrivals
+    system: StayManagementSystem
+    from: [ExpectedArrivalRegistered, GuestCheckedIn, GuestCheckedOut, NoShowRecorded]
+
+  - name: ListNoShows
+    system: StayManagementSystem
+    from: [NoShowRecorded]

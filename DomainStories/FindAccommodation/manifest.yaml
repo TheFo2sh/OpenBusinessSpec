@@ -1,0 +1,13 @@
+Name: Find an accommodation
+PackageId: M1Spec.DomainStories.FindAccommodation
+Version: 0.0.1
+Description: A traveler searches for an accommodation and checks its availability for their dates.
+Icon: "/iconify/mdi/office-building-search-outline.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.AccommodationDiscovery
+    Version: 0.0.2
+    Alias: Discovery
+  - PackageId: M1Spec.DomainLanguages.PropertyAvailability
+    Version: 0.0.4
+    Alias: PropertyAvailability

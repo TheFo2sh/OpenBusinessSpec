@@ -1,0 +1,16 @@
+Name: Modify or cancel a reservation
+PackageId: M1Spec.DomainStories.ModifyOrCancelReservation
+Version: 0.0.1
+Description: A traveler changes or cancels a reservation, releasing availability and settling any cancellation amount.
+Icon: "/iconify/mdi/clipboard-edit-outline.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.Reservation
+    Version: 0.0.3
+    Alias: Reservation
+  - PackageId: M1Spec.DomainLanguages.PropertyAvailability
+    Version: 0.0.4
+    Alias: PropertyAvailability
+  - PackageId: M1Spec.DomainLanguages.Payment
+    Version: 0.0.2
+    Alias: Payment

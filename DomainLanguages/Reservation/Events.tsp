@@ -23,4 +23,26 @@ model ReservationModified {
 model ReservationCancelled {
   reservation: Reservation;
   cancellationTerms: string;
+  cancellationFee?: float64;
+  refundableAmount?: float64;
+  currency?: string;
+}
+
+@icon("/iconify/mdi/home-check-outline.svg")
+@event("20000000-0000-4000-8000-000000000019", source:"/property-reservations")
+model AccommodationReservationAccepted {
+  reservationReference: string;
+}
+
+@icon("/iconify/mdi/credit-card-check-outline.svg")
+@event("20000000-0000-4000-8000-000000000020", source:"/reservations")
+model ReservationGuaranteeSecured {
+  reservation: Reservation;
+}
+
+@icon("/iconify/mdi/credit-card-remove-outline.svg")
+@event("20000000-0000-4000-8000-000000000021", source:"/reservations")
+model ReservationGuaranteeFailed {
+  reservation: Reservation;
+  reason?: string;
 }

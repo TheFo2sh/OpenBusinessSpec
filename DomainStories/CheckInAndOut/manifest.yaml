@@ -1,0 +1,16 @@
+Name: Check in and check out
+PackageId: M1Spec.DomainStories.CheckInAndOut
+Version: 0.0.1
+Description: Front desk staff check guests in against confirmed reservations and collect payment at checkout.
+Icon: "/iconify/mdi/account-arrow-right-outline.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.StayOperations
+    Version: 0.0.2
+    Alias: StayOperations
+  - PackageId: M1Spec.DomainLanguages.Reservation
+    Version: 0.0.3
+    Alias: Reservation
+  - PackageId: M1Spec.DomainLanguages.Payment
+    Version: 0.0.2
+    Alias: Payment

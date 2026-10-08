@@ -1,0 +1,41 @@
+name: Check in and check out
+description: >-
+  The stay system registers a confirmed reservation as an expected arrival.
+  Front desk staff check the guest in, then check them out and collect payment
+  for the stay.
+
+sentences:
+  - actor: Reservation/ReservationService
+    activity: confirms
+    workObject: Reservation/Reservation
+    recipient: StayOperations/StayManagementSystem
+
+  - actor: StayOperations/StayManagementSystem
+    activity: registers an expected
+    workObject: StayOperations/Stay
+    recipient: StayOperations/FrontDeskStaff
+
+  - actor: StayOperations/FrontDeskStaff
+    activity: checks in
+    workObject: StayOperations/StayingGuest
+    recipient: StayOperations/StayManagementSystem
+
+  - actor: StayOperations/FrontDeskStaff
+    activity: checks out
+    workObject: StayOperations/StayingGuest
+    recipient: StayOperations/StayManagementSystem
+
+  - actor: StayOperations/StayManagementSystem
+    activity: charges for
+    workObject: StayOperations/Stay
+    recipient: Payment/PaymentService
+
+  - actor: Payment/PaymentService
+    activity: captures payment with
+    workObject: Payment/Charge
+    recipient: Payment/PaymentProvider
+
+  - actor: StayOperations/FrontDeskStaff
+    activity: views expected arrivals and no-shows for
+    workObject: StayOperations/Stay
+    recipient: StayOperations/StayManagementSystem

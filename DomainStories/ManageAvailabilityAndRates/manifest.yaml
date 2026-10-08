@@ -1,0 +1,10 @@
+Name: Manage availability and rates
+PackageId: M1Spec.DomainStories.ManageAvailabilityAndRates
+Version: 0.0.1
+Description: A property manager sets availability and rates, opens or closes sales, and distributes every change.
+Icon: "/iconify/mdi/calendar-edit-outline.svg"
+Publisher: M1Spec
+Dependencies:
+  - PackageId: M1Spec.DomainLanguages.PropertyAvailability
+    Version: 0.0.4
+    Alias: PropertyAvailability
