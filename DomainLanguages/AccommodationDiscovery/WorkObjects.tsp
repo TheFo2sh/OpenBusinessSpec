@@ -43,6 +43,8 @@ model Location {
   longitude?: float64;
 }
 
+@workObject("10000000-0000-4000-8000-000000000022")
+@icon("/iconify/mdi/filter-outline.svg")
 model SearchCriteria {
   destination: string;
   arrivalDate: plainDate;

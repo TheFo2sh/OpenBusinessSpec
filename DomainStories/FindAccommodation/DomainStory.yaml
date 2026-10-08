@@ -1,0 +1,41 @@
+name: Find an accommodation
+description: >-
+  A traveler searches by destination and dates, reviews an accommodation, and
+  checks room availability. The discovery service keeps its offers current from
+  the accommodation information provider and property availability updates.
+
+sentences:
+  - actor: Discovery/Traveler
+    activity: searches for
+    workObject: Discovery/SearchCriteria
+    recipient: Discovery/DiscoveryService
+
+  - actor: Discovery/Traveler
+    activity: views
+    workObject: Discovery/Accommodation
+    recipient: Discovery/DiscoveryService
+
+  - actor: Discovery/Traveler
+    activity: checks availability for
+    workObject: Discovery/AccommodationOffer
+    recipient: Discovery/DiscoveryService
+
+  - actor: PropertyAvailability/PropertyManager
+    activity: updates
+    workObject: PropertyAvailability/RoomAvailability
+    recipient: PropertyAvailability/InventoryManagementSystem
+
+  - actor: PropertyAvailability/PropertyManager
+    activity: sets
+    workObject: PropertyAvailability/RatePlan
+    recipient: PropertyAvailability/InventoryManagementSystem
+
+  - actor: PropertyAvailability/InventoryManagementSystem
+    activity: shares updated offers with
+    workObject: Discovery/AccommodationOffer
+    recipient: Discovery/DiscoveryService
+
+  - actor: Discovery/AccommodationInformationProvider
+    activity: provides
+    workObject: Discovery/Accommodation
+    recipient: Discovery/DiscoveryService

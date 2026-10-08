@@ -1,0 +1,51 @@
+systems: [DiscoveryService, InventoryManagementSystem]
+
+flows:
+  - system: InventoryManagementSystem
+    startedBy: PropertyAvailability/PropertyManager
+    trigger: { name: Property availability calendar, kind: frontend }
+    command: PropertyAvailability/SetRoomAvailability
+    events: [PropertyAvailability/RoomAvailabilitySet]
+
+  - system: InventoryManagementSystem
+    startedBy: PropertyAvailability/PropertyManager
+    trigger: { name: Property rate plans, kind: frontend }
+    command: PropertyAvailability/SetRatePlan
+    events: [PropertyAvailability/RatePlanSet]
+
+  - system: DiscoveryService
+    policy:
+      name: Refresh searchable offers
+      rules:
+        - { when: PropertyAvailability/RoomAvailabilitySet, then: Discovery/RefreshSearchableOffers }
+        - { when: PropertyAvailability/RatePlanSet, then: Discovery/RefreshSearchableOffers }
+    command: Discovery/RefreshSearchableOffers
+    events: [Discovery/SearchableOffersUpdated]
+
+  - system: DiscoveryService
+    startedBy: Discovery/Traveler
+    trigger: { name: Accommodation search, kind: frontend }
+    reads: [SearchAccommodations]
+
+  - system: DiscoveryService
+    startedBy: Discovery/Traveler
+    trigger: { name: Accommodation details, kind: frontend }
+    reads: [ViewAccommodationDetails]
+
+  - system: DiscoveryService
+    startedBy: Discovery/Traveler
+    trigger: { name: Availability search, kind: frontend }
+    reads: [CheckAccommodationAvailability]
+
+readModels:
+  - name: SearchAccommodations
+    system: DiscoveryService
+    from: [SearchableOffersUpdated]
+
+  - name: ViewAccommodationDetails
+    system: DiscoveryService
+    from: [SearchableOffersUpdated]
+
+  - name: CheckAccommodationAvailability
+    system: DiscoveryService
+    from: [SearchableOffersUpdated]

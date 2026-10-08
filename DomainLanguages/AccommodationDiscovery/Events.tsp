@@ -19,3 +19,10 @@ model AccommodationAvailabilityPresented {
   accommodationId: string;
   offers: AccommodationOffer[];
 }
+
+@icon("/iconify/mdi/database-check-outline.svg")
+@event("10000000-0000-4000-8000-000000000021", source:"/search-index")
+model SearchableOffersUpdated {
+  accommodationId: string;
+  offers: AccommodationOffer[];
+}
